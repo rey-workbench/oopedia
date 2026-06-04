@@ -546,28 +546,10 @@
       "norm_label": "adaptivefact"
     },
     {
-      "label": "findByIds()",
-      "file_type": "code",
-      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L15",
-      "id": "repositories_adaptivefactrepositoryinterface_findbyids",
-      "community": 95,
-      "norm_label": "findbyids()"
-    },
-    {
-      "label": "Collection",
-      "file_type": "code",
-      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L15",
-      "id": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection",
-      "community": 95,
-      "norm_label": "collection"
-    },
-    {
       "label": "updateOrCreate()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L17",
+      "source_location": "L14",
       "id": "repositories_adaptivefactrepositoryinterface_updateorcreate",
       "community": 95,
       "norm_label": "updateorcreate()"
@@ -576,7 +558,7 @@
       "label": "count()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L19",
+      "source_location": "L16",
       "id": "repositories_adaptivefactrepositoryinterface_count",
       "community": 95,
       "norm_label": "count()"
@@ -585,16 +567,25 @@
       "label": "getByCategory()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L21",
+      "source_location": "L18",
       "id": "repositories_adaptivefactrepositoryinterface_getbycategory",
       "community": 95,
       "norm_label": "getbycategory()"
     },
     {
+      "label": "Collection",
+      "file_type": "code",
+      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
+      "source_location": "L18",
+      "id": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection",
+      "community": 95,
+      "norm_label": "collection"
+    },
+    {
       "label": "getAllForResources()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L23",
+      "source_location": "L20",
       "id": "repositories_adaptivefactrepositoryinterface_getallforresources",
       "community": 95,
       "norm_label": "getallforresources()"
@@ -690,19 +681,10 @@
       "norm_label": "create()"
     },
     {
-      "label": "update()",
-      "file_type": "code",
-      "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
-      "source_location": "L28",
-      "id": "repositories_adaptiverulerepositoryinterface_update",
-      "community": 77,
-      "norm_label": "update()"
-    },
-    {
       "label": "delete()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
-      "source_location": "L30",
+      "source_location": "L28",
       "id": "repositories_adaptiverulerepositoryinterface_delete",
       "community": 77,
       "norm_label": "delete()"
@@ -711,7 +693,7 @@
       "label": "getActiveOrdered()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
-      "source_location": "L32",
+      "source_location": "L30",
       "id": "repositories_adaptiverulerepositoryinterface_getactiveordered",
       "community": 77,
       "norm_label": "getactiveordered()"
@@ -720,7 +702,7 @@
       "label": "findNameById()",
       "file_type": "code",
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
-      "source_location": "L34",
+      "source_location": "L32",
       "id": "repositories_adaptiverulerepositoryinterface_findnamebyid",
       "community": 77,
       "norm_label": "findnamebyid()"
@@ -7047,7 +7029,7 @@
       "label": "ProfileController",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L21",
+      "source_location": "L22",
       "id": "mahasiswa_profilecontroller_profilecontroller",
       "community": 85,
       "norm_label": "profilecontroller"
@@ -7056,7 +7038,7 @@
       "label": ".__construct()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L23",
+      "source_location": "L24",
       "id": "mahasiswa_profilecontroller_profilecontroller_construct",
       "community": 85,
       "norm_label": ".__construct()"
@@ -7065,7 +7047,7 @@
       "label": ".show()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L30",
+      "source_location": "L31",
       "id": "mahasiswa_profilecontroller_profilecontroller_show",
       "community": 85,
       "norm_label": ".show()"
@@ -7074,7 +7056,7 @@
       "label": "Response",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L30",
+      "source_location": "L31",
       "id": "app_http_controllers_mahasiswa_profilecontroller_php_response",
       "community": 85,
       "norm_label": "response"
@@ -7083,7 +7065,7 @@
       "label": ".deriveLearningProfile()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L98",
+      "source_location": "L99",
       "id": "mahasiswa_profilecontroller_profilecontroller_derivelearningprofile",
       "community": 85,
       "norm_label": ".derivelearningprofile()"
@@ -7092,7 +7074,7 @@
       "label": "MslqResult",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L98",
+      "source_location": "L99",
       "id": "app_http_controllers_mahasiswa_profilecontroller_php_mslqresult",
       "community": 85,
       "norm_label": "mslqresult"
@@ -7101,7 +7083,7 @@
       "label": ".update()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L122",
+      "source_location": "L123",
       "id": "mahasiswa_profilecontroller_profilecontroller_update",
       "community": 85,
       "norm_label": ".update()"
@@ -7110,7 +7092,7 @@
       "label": "UpdateProfileRequest",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L122",
+      "source_location": "L123",
       "id": "app_http_controllers_mahasiswa_profilecontroller_php_updateprofilerequest",
       "community": 85,
       "norm_label": "updateprofilerequest"
@@ -7119,7 +7101,7 @@
       "label": "RedirectResponse",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/ProfileController.php",
-      "source_location": "L122",
+      "source_location": "L123",
       "id": "app_http_controllers_mahasiswa_profilecontroller_php_redirectresponse",
       "community": 85,
       "norm_label": "redirectresponse"
@@ -7137,7 +7119,7 @@
       "label": "QuizInteractionController",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L22",
+      "source_location": "L21",
       "id": "mahasiswa_quizinteractioncontroller_quizinteractioncontroller",
       "community": 102,
       "norm_label": "quizinteractioncontroller"
@@ -7146,7 +7128,7 @@
       "label": ".__construct()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L24",
+      "source_location": "L23",
       "id": "mahasiswa_quizinteractioncontroller_quizinteractioncontroller_construct",
       "community": 102,
       "norm_label": ".__construct()"
@@ -7155,7 +7137,7 @@
       "label": ".submit()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L32",
+      "source_location": "L31",
       "id": "mahasiswa_quizinteractioncontroller_quizinteractioncontroller_submit",
       "community": 102,
       "norm_label": ".submit()"
@@ -7164,7 +7146,7 @@
       "label": "CheckAnswerRequest",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L32",
+      "source_location": "L31",
       "id": "checkanswerrequest",
       "community": 102,
       "norm_label": "checkanswerrequest"
@@ -7173,7 +7155,7 @@
       "label": "Material",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L32",
+      "source_location": "L31",
       "id": "app_http_controllers_mahasiswa_quizinteractioncontroller_php_material",
       "community": 102,
       "norm_label": "material"
@@ -7182,7 +7164,7 @@
       "label": "Question",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L32",
+      "source_location": "L31",
       "id": "app_http_controllers_mahasiswa_quizinteractioncontroller_php_question",
       "community": 102,
       "norm_label": "question"
@@ -7191,7 +7173,7 @@
       "label": "RedirectResponse",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L32",
+      "source_location": "L31",
       "id": "app_http_controllers_mahasiswa_quizinteractioncontroller_php_redirectresponse",
       "community": 102,
       "norm_label": "redirectresponse"
@@ -7200,7 +7182,7 @@
       "label": ".useHint()",
       "file_type": "code",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L102",
+      "source_location": "L101",
       "id": "mahasiswa_quizinteractioncontroller_quizinteractioncontroller_usehint",
       "community": 102,
       "norm_label": ".usehint()"
@@ -10635,28 +10617,10 @@
       "norm_label": "adaptivefact"
     },
     {
-      "label": ".findByIds()",
-      "file_type": "code",
-      "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L18",
-      "id": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids",
-      "community": 42,
-      "norm_label": ".findbyids()"
-    },
-    {
-      "label": "Collection",
-      "file_type": "code",
-      "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L18",
-      "id": "app_repositories_adaptivefactrepository_php_collection",
-      "community": 42,
-      "norm_label": "collection"
-    },
-    {
       "label": ".updateOrCreate()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L23",
+      "source_location": "L18",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_updateorcreate",
       "community": 42,
       "norm_label": ".updateorcreate()"
@@ -10665,7 +10629,7 @@
       "label": ".count()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L28",
+      "source_location": "L23",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_count",
       "community": 42,
       "norm_label": ".count()"
@@ -10674,16 +10638,25 @@
       "label": ".getByCategory()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L33",
+      "source_location": "L28",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_getbycategory",
       "community": 42,
       "norm_label": ".getbycategory()"
     },
     {
+      "label": "Collection",
+      "file_type": "code",
+      "source_file": "app/Repositories/AdaptiveFactRepository.php",
+      "source_location": "L28",
+      "id": "app_repositories_adaptivefactrepository_php_collection",
+      "community": 42,
+      "norm_label": "collection"
+    },
+    {
       "label": ".getAllForResources()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L38",
+      "source_location": "L33",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources",
       "community": 42,
       "norm_label": ".getallforresources()"
@@ -10797,19 +10770,10 @@
       "norm_label": ".create()"
     },
     {
-      "label": ".update()",
-      "file_type": "code",
-      "source_file": "app/Repositories/AdaptiveRuleRepository.php",
-      "source_location": "L50",
-      "id": "repositories_adaptiverulerepository_adaptiverulerepository_update",
-      "community": 12,
-      "norm_label": ".update()"
-    },
-    {
       "label": ".delete()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
-      "source_location": "L63",
+      "source_location": "L50",
       "id": "repositories_adaptiverulerepository_adaptiverulerepository_delete",
       "community": 12,
       "norm_label": ".delete()"
@@ -10818,7 +10782,7 @@
       "label": ".getActiveOrdered()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
-      "source_location": "L74",
+      "source_location": "L61",
       "id": "repositories_adaptiverulerepository_adaptiverulerepository_getactiveordered",
       "community": 12,
       "norm_label": ".getactiveordered()"
@@ -10827,7 +10791,7 @@
       "label": ".findNameById()",
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
-      "source_location": "L79",
+      "source_location": "L66",
       "id": "repositories_adaptiverulerepository_adaptiverulerepository_findnamebyid",
       "community": 12,
       "norm_label": ".findnamebyid()"
@@ -12897,7 +12861,7 @@
       "label": ".getStudentsNeedingAttention()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/AdminDashboardService.php",
-      "source_location": "L148",
+      "source_location": "L151",
       "id": "analytics_admindashboardservice_admindashboardservice_getstudentsneedingattention",
       "community": 127,
       "norm_label": ".getstudentsneedingattention()"
@@ -15433,7 +15397,7 @@
       "source_file": "resources/js/components/index.ts",
       "source_location": "L1",
       "id": "components_index",
-      "community": 43,
+      "community": 47,
       "norm_label": "index.ts"
     },
     {
@@ -17063,7 +17027,7 @@
       "source_file": "resources/js/states/Admin/UserState.svelte",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_states_admin_userstate_svelte",
-      "community": 6,
+      "community": 13,
       "norm_label": "@/states/admin/userstate.svelte"
     },
     {
@@ -17307,7 +17271,7 @@
       "source_file": "resources/js/pages/Mahasiswa/Materials/Questions/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_mahasiswa_materials_questions_index_svelte_questions_index",
-      "community": 9,
+      "community": 6,
       "norm_label": "index.svelte"
     },
     {
@@ -17361,7 +17325,7 @@
       "source_file": "resources/js/pages/Mahasiswa/Materials/Show/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_mahasiswa_materials_show_index_svelte_show_index",
-      "community": 41,
+      "community": 6,
       "norm_label": "index.svelte"
     },
     {
@@ -17883,7 +17847,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L6",
       "id": "admin_mslqstate_svelte_mslqstate",
-      "community": 25,
+      "community": 150,
       "norm_label": "mslqstate"
     },
     {
@@ -17892,7 +17856,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L14",
       "id": "admin_mslqstate_svelte_mslqstate_constructor",
-      "community": 25,
+      "community": 150,
       "norm_label": ".constructor()"
     },
     {
@@ -17901,7 +17865,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L31",
       "id": "admin_mslqstate_svelte_mslqstate_handlefilterchange",
-      "community": 25,
+      "community": 150,
       "norm_label": ".handlefilterchange()"
     },
     {
@@ -17910,7 +17874,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L39",
       "id": "admin_mslqstate_svelte_mslqstate_exportresults",
-      "community": 25,
+      "community": 150,
       "norm_label": ".exportresults()"
     },
     {
@@ -17919,7 +17883,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L48",
       "id": "admin_mslqstate_svelte_mslqdetailstate",
-      "community": 25,
+      "community": 150,
       "norm_label": "mslqdetailstate"
     },
     {
@@ -17928,7 +17892,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L51",
       "id": "admin_mslqstate_svelte_mslqdetailstate_constructor",
-      "community": 25,
+      "community": 150,
       "norm_label": ".constructor()"
     },
     {
@@ -17937,7 +17901,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L56",
       "id": "admin_mslqstate_svelte_mslqdetailstate_motivationscores",
-      "community": 25,
+      "community": 150,
       "norm_label": ".motivationscores()"
     },
     {
@@ -17946,7 +17910,7 @@
       "source_file": "resources/js/states/Admin/MslqState.svelte.ts",
       "source_location": "L74",
       "id": "admin_mslqstate_svelte_mslqdetailstate_strategyscores",
-      "community": 25,
+      "community": 150,
       "norm_label": ".strategyscores()"
     },
     {
@@ -19224,7 +19188,7 @@
       "source_file": "resources/js/states/Mahasiswa/QuizState.svelte.ts",
       "source_location": "L20",
       "id": "mahasiswa_quizstate_svelte_questionliststate",
-      "community": 14,
+      "community": 16,
       "norm_label": "questionliststate"
     },
     {
@@ -19233,7 +19197,7 @@
       "source_file": "resources/js/states/Mahasiswa/QuizState.svelte.ts",
       "source_location": "L23",
       "id": "mahasiswa_quizstate_svelte_questionliststate_constructor",
-      "community": 14,
+      "community": 16,
       "norm_label": ".constructor()"
     },
     {
@@ -20547,7 +20511,7 @@
       "source_file": "resources/js/types/models/survey/Mslq.ts",
       "source_location": "L35",
       "id": "survey_mslq_mslqresult",
-      "community": 25,
+      "community": 150,
       "norm_label": "mslqresult"
     },
     {
@@ -22286,6 +22250,42 @@
       "id": "states_agents_internal",
       "community": 89,
       "norm_label": "internal"
+    },
+    {
+      "label": "findByIds()",
+      "file_type": "code",
+      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
+      "source_location": "L15",
+      "community": 95,
+      "norm_label": "findbyids()",
+      "id": "repositories_adaptivefactrepositoryinterface_findbyids"
+    },
+    {
+      "label": "update()",
+      "file_type": "code",
+      "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
+      "source_location": "L28",
+      "community": 77,
+      "norm_label": "update()",
+      "id": "repositories_adaptiverulerepositoryinterface_update"
+    },
+    {
+      "label": ".findByIds()",
+      "file_type": "code",
+      "source_file": "app/Repositories/AdaptiveFactRepository.php",
+      "source_location": "L18",
+      "community": 42,
+      "norm_label": ".findbyids()",
+      "id": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids"
+    },
+    {
+      "label": ".update()",
+      "file_type": "code",
+      "source_file": "app/Repositories/AdaptiveRuleRepository.php",
+      "source_location": "L50",
+      "community": 12,
+      "norm_label": ".update()",
+      "id": "repositories_adaptiverulerepository_adaptiverulerepository_update"
     },
     {
       "label": "AdaptiveAction",
@@ -24152,9 +24152,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction"
     },
     {
       "relation": "imports",
@@ -24163,9 +24163,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection"
     },
     {
       "relation": "contains",
@@ -24173,9 +24173,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_allkeyedbyid",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_allkeyedbyid"
     },
     {
       "relation": "contains",
@@ -24183,9 +24183,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_count",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_count"
     },
     {
       "relation": "contains",
@@ -24193,9 +24193,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_create",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_create"
     },
     {
       "relation": "contains",
@@ -24203,9 +24203,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_delete",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_delete"
     },
     {
       "relation": "contains",
@@ -24213,9 +24213,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_find",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_find"
     },
     {
       "relation": "contains",
@@ -24223,9 +24223,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_findbyids",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_findbyids"
     },
     {
       "relation": "contains",
@@ -24233,9 +24233,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_getallforresources",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_getallforresources"
     },
     {
       "relation": "contains",
@@ -24243,9 +24243,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveActionRepositoryInterface.php",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface",
-      "target": "repositories_adaptiveactionrepositoryinterface_update",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepositoryinterface_update"
     },
     {
       "relation": "references",
@@ -24254,9 +24254,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface_find",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -24265,9 +24265,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface_create",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -24276,9 +24276,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface_update",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -24287,9 +24287,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface_findbyids",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection"
     },
     {
       "relation": "references",
@@ -24298,9 +24298,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface_allkeyedbyid",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection"
     },
     {
       "relation": "references",
@@ -24309,9 +24309,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepositoryinterface_getallforresources",
-      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveactionrepositoryinterface_php_collection"
     },
     {
       "relation": "imports",
@@ -24320,9 +24320,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveExecutionLogRepositoryInterface.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepositoryinterface",
-      "target": "app_contracts_repositories_adaptiveexecutionlogrepositoryinterface_php_adaptiveexecutionlog",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveexecutionlogrepositoryinterface_php_adaptiveexecutionlog"
     },
     {
       "relation": "imports",
@@ -24351,9 +24351,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveExecutionLogRepositoryInterface.php",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepositoryinterface",
-      "target": "repositories_adaptiveexecutionlogrepositoryinterface_create",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveexecutionlogrepositoryinterface_create"
     },
     {
       "relation": "contains",
@@ -24383,9 +24383,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepositoryinterface_create",
-      "target": "app_contracts_repositories_adaptiveexecutionlogrepositoryinterface_php_adaptiveexecutionlog",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiveexecutionlogrepositoryinterface_php_adaptiveexecutionlog"
     },
     {
       "relation": "imports",
@@ -24394,9 +24394,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_adaptivefact"
     },
     {
       "relation": "imports",
@@ -24405,9 +24405,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection"
     },
     {
       "relation": "contains",
@@ -24415,9 +24415,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "repositories_adaptivefactrepositoryinterface_count",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepositoryinterface_count"
     },
     {
       "relation": "contains",
@@ -24425,9 +24425,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "repositories_adaptivefactrepositoryinterface_find",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepositoryinterface_find"
     },
     {
       "relation": "contains",
@@ -24435,9 +24435,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "repositories_adaptivefactrepositoryinterface_findbyids",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepositoryinterface_findbyids"
     },
     {
       "relation": "contains",
@@ -24445,9 +24445,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "repositories_adaptivefactrepositoryinterface_getallforresources",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepositoryinterface_getallforresources"
     },
     {
       "relation": "contains",
@@ -24455,9 +24455,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "repositories_adaptivefactrepositoryinterface_getbycategory",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepositoryinterface_getbycategory"
     },
     {
       "relation": "contains",
@@ -24465,9 +24465,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface",
-      "target": "repositories_adaptivefactrepositoryinterface_updateorcreate",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepositoryinterface_updateorcreate"
     },
     {
       "relation": "references",
@@ -24476,9 +24476,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface_find",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_adaptivefact"
     },
     {
       "relation": "references",
@@ -24487,31 +24487,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface_updateorcreate",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_adaptivefact",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L15",
-      "weight": 1.0,
-      "context": "return_type",
-      "source": "repositories_adaptivefactrepositoryinterface_findbyids",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
-      "source_location": "L23",
-      "weight": 1.0,
-      "context": "return_type",
-      "source": "repositories_adaptivefactrepositoryinterface_getallforresources",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_adaptivefact"
     },
     {
       "relation": "references",
@@ -24520,9 +24498,31 @@
       "source_location": "L21",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepositoryinterface_getbycategory",
-      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "repositories_adaptivefactrepositoryinterface_findbyids",
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Contracts/Repositories/AdaptiveFactRepositoryInterface.php",
+      "source_location": "L23",
+      "weight": 1.0,
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "repositories_adaptivefactrepositoryinterface_getallforresources",
+      "target": "app_contracts_repositories_adaptivefactrepositoryinterface_php_collection"
     },
     {
       "relation": "imports",
@@ -24583,9 +24583,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface",
-      "target": "repositories_adaptiverulerepositoryinterface_create",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepositoryinterface_create"
     },
     {
       "relation": "contains",
@@ -24593,9 +24593,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface",
-      "target": "repositories_adaptiverulerepositoryinterface_delete",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepositoryinterface_delete"
     },
     {
       "relation": "contains",
@@ -24623,9 +24623,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface",
-      "target": "repositories_adaptiverulerepositoryinterface_findnamebyid",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepositoryinterface_findnamebyid"
     },
     {
       "relation": "contains",
@@ -24633,9 +24633,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface",
-      "target": "repositories_adaptiverulerepositoryinterface_getactiveordered",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepositoryinterface_getactiveordered"
     },
     {
       "relation": "contains",
@@ -24663,9 +24663,9 @@
       "source_file": "app/Contracts/Repositories/AdaptiveRuleRepositoryInterface.php",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface",
-      "target": "repositories_adaptiverulerepositoryinterface_update",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepositoryinterface_update"
     },
     {
       "relation": "references",
@@ -24696,9 +24696,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface_getactiveordered",
-      "target": "app_contracts_repositories_adaptiverulerepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiverulerepositoryinterface_php_collection"
     },
     {
       "relation": "references",
@@ -24740,9 +24740,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface_create",
-      "target": "app_contracts_repositories_adaptiverulerepositoryinterface_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiverulerepositoryinterface_php_adaptiverule"
     },
     {
       "relation": "references",
@@ -24751,9 +24751,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepositoryinterface_update",
-      "target": "app_contracts_repositories_adaptiverulerepositoryinterface_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_adaptiverulerepositoryinterface_php_adaptiverule"
     },
     {
       "relation": "imports",
@@ -25279,9 +25279,9 @@
       "source_file": "app/Contracts/Repositories/MslqRepositoryInterface.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_mslqrepositoryinterface",
-      "target": "app_contracts_repositories_mslqrepositoryinterface_php_mslqanswer",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_mslqrepositoryinterface_php_mslqanswer"
     },
     {
       "relation": "imports",
@@ -25310,9 +25310,9 @@
       "source_file": "app/Contracts/Repositories/MslqRepositoryInterface.php",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_mslqrepositoryinterface",
-      "target": "repositories_mslqrepositoryinterface_createanswer",
-      "confidence_score": 1.0
+      "target": "repositories_mslqrepositoryinterface_createanswer"
     },
     {
       "relation": "contains",
@@ -25437,9 +25437,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_mslqrepositoryinterface_createanswer",
-      "target": "app_contracts_repositories_mslqrepositoryinterface_php_mslqanswer",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_mslqrepositoryinterface_php_mslqanswer"
     },
     {
       "relation": "imports",
@@ -25919,9 +25919,9 @@
       "source_file": "app/Contracts/Repositories/QuestionRepositoryInterface.php",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepositoryinterface",
-      "target": "repositories_questionrepositoryinterface_findwithmaterial",
-      "confidence_score": 1.0
+      "target": "repositories_questionrepositoryinterface_findwithmaterial"
     },
     {
       "relation": "contains",
@@ -25959,9 +25959,9 @@
       "source_file": "app/Contracts/Repositories/QuestionRepositoryInterface.php",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepositoryinterface",
-      "target": "repositories_questionrepositoryinterface_hasunansweredlowerdifficulty",
-      "confidence_score": 1.0
+      "target": "repositories_questionrepositoryinterface_hasunansweredlowerdifficulty"
     },
     {
       "relation": "references",
@@ -26003,9 +26003,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_questionrepositoryinterface_findwithmaterial",
-      "target": "app_contracts_repositories_questionrepositoryinterface_php_question",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_questionrepositoryinterface_php_question"
     },
     {
       "relation": "references",
@@ -26069,9 +26069,9 @@
       "source_file": "app/Contracts/Repositories/RoleRepositoryInterface.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_rolerepositoryinterface",
-      "target": "app_contracts_repositories_rolerepositoryinterface_php_role",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_rolerepositoryinterface_php_role"
     },
     {
       "relation": "contains",
@@ -26089,9 +26089,9 @@
       "source_file": "app/Contracts/Repositories/RoleRepositoryInterface.php",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_rolerepositoryinterface",
-      "target": "repositories_rolerepositoryinterface_findbyrolename",
-      "confidence_score": 1.0
+      "target": "repositories_rolerepositoryinterface_findbyrolename"
     },
     {
       "relation": "references",
@@ -26111,9 +26111,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_rolerepositoryinterface_findbyrolename",
-      "target": "app_contracts_repositories_rolerepositoryinterface_php_role",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_rolerepositoryinterface_php_role"
     },
     {
       "relation": "imports",
@@ -26186,9 +26186,9 @@
       "source_file": "app/Contracts/Repositories/SusResultRepositoryInterface.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepositoryinterface",
-      "target": "app_contracts_repositories_susresultrepositoryinterface_php_susanswer",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_susresultrepositoryinterface_php_susanswer"
     },
     {
       "relation": "imports",
@@ -26217,9 +26217,9 @@
       "source_file": "app/Contracts/Repositories/SusResultRepositoryInterface.php",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepositoryinterface",
-      "target": "repositories_susresultrepositoryinterface_createanswer",
-      "confidence_score": 1.0
+      "target": "repositories_susresultrepositoryinterface_createanswer"
     },
     {
       "relation": "contains",
@@ -26247,9 +26247,9 @@
       "source_file": "app/Contracts/Repositories/SusResultRepositoryInterface.php",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepositoryinterface",
-      "target": "repositories_susresultrepositoryinterface_getaveragevalueforquestion",
-      "confidence_score": 1.0
+      "target": "repositories_susresultrepositoryinterface_getaveragevalueforquestion"
     },
     {
       "relation": "contains",
@@ -26257,9 +26257,9 @@
       "source_file": "app/Contracts/Repositories/SusResultRepositoryInterface.php",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepositoryinterface",
-      "target": "repositories_susresultrepositoryinterface_getorderedquestions",
-      "confidence_score": 1.0
+      "target": "repositories_susresultrepositoryinterface_getorderedquestions"
     },
     {
       "relation": "references",
@@ -26279,9 +26279,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepositoryinterface_getorderedquestions",
-      "target": "app_contracts_repositories_susresultrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_susresultrepositoryinterface_php_collection"
     },
     {
       "relation": "references",
@@ -26312,9 +26312,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepositoryinterface_createanswer",
-      "target": "app_contracts_repositories_susresultrepositoryinterface_php_susanswer",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_susresultrepositoryinterface_php_susanswer"
     },
     {
       "relation": "imports",
@@ -26571,9 +26571,9 @@
       "source_file": "app/Contracts/Repositories/UserRepositoryInterface.php",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_userrepositoryinterface",
-      "target": "repositories_userrepositoryinterface_getstudentsneedingattention",
-      "confidence_score": 1.0
+      "target": "repositories_userrepositoryinterface_getstudentsneedingattention"
     },
     {
       "relation": "contains",
@@ -26722,9 +26722,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_userrepositoryinterface_getstudentsneedingattention",
-      "target": "app_contracts_repositories_userrepositoryinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_repositories_userrepositoryinterface_php_collection"
     },
     {
       "relation": "imports",
@@ -28927,9 +28927,9 @@
       "source_file": "app/Contracts/Services/SusResultServiceInterface.php",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_susresultserviceinterface",
-      "target": "services_susresultserviceinterface_getorderedquestions",
-      "confidence_score": 1.0
+      "target": "services_susresultserviceinterface_getorderedquestions"
     },
     {
       "relation": "contains",
@@ -29023,9 +29023,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "services_susresultserviceinterface_getorderedquestions",
-      "target": "app_contracts_services_susresultserviceinterface_php_collection",
-      "confidence_score": 1.0
+      "target": "app_contracts_services_susresultserviceinterface_php_collection"
     },
     {
       "relation": "references",
@@ -31296,9 +31296,9 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "admin_adaptiveactioncontroller",
-      "target": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction"
     },
     {
       "relation": "imports",
@@ -31412,9 +31412,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "admin_adaptiveactioncontroller_adaptiveactioncontroller_update",
-      "target": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -31445,9 +31445,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "admin_adaptiveactioncontroller_adaptiveactioncontroller_destroy",
-      "target": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -34766,7 +34766,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Auth/SocialController.php",
-      "source_location": "L7",
+      "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "auth_socialcontroller",
@@ -36523,7 +36523,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/Http/Controllers/Mahasiswa/QuizInteractionController.php",
-      "source_location": "L7",
+      "source_location": "L16",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "mahasiswa_quizinteractioncontroller",
@@ -36828,9 +36828,9 @@
       "source_file": "app/Http/Controllers/Mahasiswa/SusSurveyController.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "mahasiswa_sussurveycontroller",
-      "target": "userserviceinterface",
-      "confidence_score": 1.0
+      "target": "userserviceinterface"
     },
     {
       "relation": "method",
@@ -43393,9 +43393,9 @@
       "source_file": "app/Providers/RepositoryServiceProvider.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "providers_repositoryserviceprovider",
-      "target": "adaptiveactionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveactionrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -43415,9 +43415,9 @@
       "source_file": "app/Providers/RepositoryServiceProvider.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "providers_repositoryserviceprovider",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -43873,9 +43873,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository",
-      "target": "adaptiveactionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveactionrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -43884,9 +43884,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "imports",
@@ -43895,9 +43895,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository",
-      "target": "app_repositories_adaptiveactionrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_collection"
     },
     {
       "relation": "contains",
@@ -43905,9 +43905,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository"
     },
     {
       "relation": "implements",
@@ -43915,9 +43915,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "adaptiveactionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveactionrepositoryinterface"
     },
     {
       "relation": "method",
@@ -43925,9 +43925,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_allkeyedbyid",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_allkeyedbyid"
     },
     {
       "relation": "method",
@@ -43935,9 +43935,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_count",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_count"
     },
     {
       "relation": "method",
@@ -43945,9 +43945,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_create",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_create"
     },
     {
       "relation": "method",
@@ -43955,9 +43955,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_delete",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_delete"
     },
     {
       "relation": "method",
@@ -43965,9 +43965,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_find",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_find"
     },
     {
       "relation": "method",
@@ -43975,9 +43975,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_findbyids",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_findbyids"
     },
     {
       "relation": "method",
@@ -43985,9 +43985,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L62",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_getallforresources",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_getallforresources"
     },
     {
       "relation": "method",
@@ -43995,9 +43995,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_update",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveactionrepository_adaptiveactionrepository_update"
     },
     {
       "relation": "imports",
@@ -44006,9 +44006,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptiveanalyticsservice",
-      "target": "adaptiveactionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveactionrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44017,9 +44017,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveManagementService.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptivemanagementservice",
-      "target": "adaptiveactionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveactionrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44028,9 +44028,9 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lms_quizsubmissionservice",
-      "target": "adaptiveactionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveactionrepositoryinterface"
     },
     {
       "relation": "references",
@@ -44039,9 +44039,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_find",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "calls",
@@ -44050,9 +44050,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_allkeyedbyid",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "calls",
@@ -44061,9 +44061,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_count",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -44072,9 +44072,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_create",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "calls",
@@ -44083,9 +44083,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_delete",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "calls",
@@ -44094,9 +44094,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_findbyids",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "calls",
@@ -44105,9 +44105,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_getallforresources",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -44116,9 +44116,9 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_update",
-      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_adaptiveaction"
     },
     {
       "relation": "references",
@@ -44127,9 +44127,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_findbyids",
-      "target": "app_repositories_adaptiveactionrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_collection"
     },
     {
       "relation": "references",
@@ -44138,9 +44138,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_allkeyedbyid",
-      "target": "app_repositories_adaptiveactionrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_collection"
     },
     {
       "relation": "references",
@@ -44149,9 +44149,9 @@
       "source_location": "L62",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveactionrepository_adaptiveactionrepository_getallforresources",
-      "target": "app_repositories_adaptiveactionrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveactionrepository_php_collection"
     },
     {
       "relation": "imports",
@@ -44182,9 +44182,9 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepository",
-      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog"
     },
     {
       "relation": "imports",
@@ -44233,9 +44233,9 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository",
-      "target": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_create",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_create"
     },
     {
       "relation": "method",
@@ -44265,9 +44265,9 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lms_quizsubmissionservice",
-      "target": "adaptiveexecutionlogrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiveexecutionlogrepositoryinterface"
     },
     {
       "relation": "calls",
@@ -44276,9 +44276,9 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_count",
-      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog"
     },
     {
       "relation": "calls",
@@ -44287,9 +44287,9 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_getrecent",
-      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog"
     },
     {
       "relation": "references",
@@ -44309,9 +44309,9 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_create",
-      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog"
     },
     {
       "relation": "imports",
@@ -44320,9 +44320,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44331,9 +44331,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "imports",
@@ -44342,9 +44342,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository",
-      "target": "app_repositories_adaptivefactrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_collection"
     },
     {
       "relation": "contains",
@@ -44352,9 +44352,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository"
     },
     {
       "relation": "implements",
@@ -44362,9 +44362,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "method",
@@ -44372,9 +44372,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository_count",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository_count"
     },
     {
       "relation": "method",
@@ -44382,9 +44382,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository_find",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository_find"
     },
     {
       "relation": "method",
@@ -44392,9 +44392,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids"
     },
     {
       "relation": "method",
@@ -44402,9 +44402,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources"
     },
     {
       "relation": "method",
@@ -44412,9 +44412,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository_getbycategory",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository_getbycategory"
     },
     {
       "relation": "method",
@@ -44422,9 +44422,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "target": "repositories_adaptivefactrepository_adaptivefactrepository_updateorcreate",
-      "confidence_score": 1.0
+      "target": "repositories_adaptivefactrepository_adaptivefactrepository_updateorcreate"
     },
     {
       "relation": "imports",
@@ -44433,9 +44433,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptiveanalyticsservice",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44444,9 +44444,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveEngineService.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptiveengineservice",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44455,9 +44455,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveManagementService.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptivemanagementservice",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44466,9 +44466,9 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lms_quizsubmissionservice",
-      "target": "adaptivefactrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptivefactrepositoryinterface"
     },
     {
       "relation": "references",
@@ -44477,9 +44477,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_find",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "calls",
@@ -44488,9 +44488,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_count",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "calls",
@@ -44499,9 +44499,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "calls",
@@ -44510,9 +44510,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "calls",
@@ -44521,9 +44521,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_getbycategory",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "references",
@@ -44532,31 +44532,9 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_updateorcreate",
-      "target": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L18",
-      "weight": 1.0,
-      "context": "return_type",
-      "source": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids",
-      "target": "app_repositories_adaptivefactrepository_php_collection",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "app/Repositories/AdaptiveFactRepository.php",
-      "source_location": "L38",
-      "weight": 1.0,
-      "context": "return_type",
-      "source": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources",
-      "target": "app_repositories_adaptivefactrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_adaptivefact"
     },
     {
       "relation": "references",
@@ -44565,9 +44543,31 @@
       "source_location": "L33",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptivefactrepository_adaptivefactrepository_getbycategory",
-      "target": "app_repositories_adaptivefactrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptivefactrepository_php_collection"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Repositories/AdaptiveFactRepository.php",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids",
+      "target": "app_repositories_adaptivefactrepository_php_collection"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Repositories/AdaptiveFactRepository.php",
+      "source_location": "L38",
+      "weight": 1.0,
+      "context": "return_type",
+      "confidence_score": 1.0,
+      "source": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources",
+      "target": "app_repositories_adaptivefactrepository_php_collection"
     },
     {
       "relation": "imports",
@@ -44659,9 +44659,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository",
-      "target": "repositories_adaptiverulerepository_adaptiverulerepository_create",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepository_adaptiverulerepository_create"
     },
     {
       "relation": "method",
@@ -44669,9 +44669,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository",
-      "target": "repositories_adaptiverulerepository_adaptiverulerepository_delete",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepository_adaptiverulerepository_delete"
     },
     {
       "relation": "method",
@@ -44699,9 +44699,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository",
-      "target": "repositories_adaptiverulerepository_adaptiverulerepository_findnamebyid",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepository_adaptiverulerepository_findnamebyid"
     },
     {
       "relation": "method",
@@ -44709,9 +44709,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository",
-      "target": "repositories_adaptiverulerepository_adaptiverulerepository_getactiveordered",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepository_adaptiverulerepository_getactiveordered"
     },
     {
       "relation": "method",
@@ -44739,9 +44739,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository",
-      "target": "repositories_adaptiverulerepository_adaptiverulerepository_update",
-      "confidence_score": 1.0
+      "target": "repositories_adaptiverulerepository_adaptiverulerepository_update"
     },
     {
       "relation": "imports",
@@ -44761,9 +44761,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveEngineService.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptiveengineservice",
-      "target": "adaptiverulerepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiverulerepositoryinterface"
     },
     {
       "relation": "imports",
@@ -44772,9 +44772,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveManagementService.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptivemanagementservice",
-      "target": "adaptiverulerepositoryinterface",
-      "confidence_score": 1.0
+      "target": "adaptiverulerepositoryinterface"
     },
     {
       "relation": "calls",
@@ -44816,9 +44816,9 @@
       "source_location": "L74",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository_getactiveordered",
-      "target": "app_repositories_adaptiverulerepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiverulerepository_php_collection"
     },
     {
       "relation": "references",
@@ -44893,9 +44893,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository_create",
-      "target": "app_repositories_adaptiverulerepository_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiverulerepository_php_adaptiverule"
     },
     {
       "relation": "calls",
@@ -44904,9 +44904,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository_delete",
-      "target": "app_repositories_adaptiverulerepository_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiverulerepository_php_adaptiverule"
     },
     {
       "relation": "calls",
@@ -44926,9 +44926,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository_findnamebyid",
-      "target": "app_repositories_adaptiverulerepository_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiverulerepository_php_adaptiverule"
     },
     {
       "relation": "calls",
@@ -44937,9 +44937,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository_getactiveordered",
-      "target": "app_repositories_adaptiverulerepository_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiverulerepository_php_adaptiverule"
     },
     {
       "relation": "references",
@@ -44948,9 +44948,9 @@
       "source_file": "app/Repositories/AdaptiveRuleRepository.php",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_adaptiverulerepository_adaptiverulerepository_update",
-      "target": "app_repositories_adaptiverulerepository_php_adaptiverule",
-      "confidence_score": 1.0
+      "target": "app_repositories_adaptiverulerepository_php_adaptiverule"
     },
     {
       "relation": "imports",
@@ -45822,9 +45822,9 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_mslqrepository",
-      "target": "app_repositories_mslqrepository_php_mslqanswer",
-      "confidence_score": 1.0
+      "target": "app_repositories_mslqrepository_php_mslqanswer"
     },
     {
       "relation": "imports",
@@ -45884,9 +45884,9 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_mslqrepository_mslqrepository",
-      "target": "repositories_mslqrepository_mslqrepository_createanswer",
-      "confidence_score": 1.0
+      "target": "repositories_mslqrepository_mslqrepository_createanswer"
     },
     {
       "relation": "method",
@@ -46044,9 +46044,9 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_mslqrepository_mslqrepository_createanswer",
-      "target": "app_repositories_mslqrepository_php_mslqanswer",
-      "confidence_score": 1.0
+      "target": "app_repositories_mslqrepository_php_mslqanswer"
     },
     {
       "relation": "imports",
@@ -46916,9 +46916,9 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepository_questionrepository",
-      "target": "repositories_questionrepository_questionrepository_findwithmaterial",
-      "confidence_score": 1.0
+      "target": "repositories_questionrepository_questionrepository_findwithmaterial"
     },
     {
       "relation": "method",
@@ -46956,9 +46956,9 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepository_questionrepository",
-      "target": "repositories_questionrepository_questionrepository_hasunansweredlowerdifficulty",
-      "confidence_score": 1.0
+      "target": "repositories_questionrepository_questionrepository_hasunansweredlowerdifficulty"
     },
     {
       "relation": "imports",
@@ -47022,9 +47022,9 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lms_quizsubmissionservice",
-      "target": "questionrepositoryinterface",
-      "confidence_score": 1.0
+      "target": "questionrepositoryinterface"
     },
     {
       "relation": "references",
@@ -47044,9 +47044,9 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepository_questionrepository_findwithmaterial",
-      "target": "repositories_questionrepository_questionrepository_find",
-      "confidence_score": 1.0
+      "target": "repositories_questionrepository_questionrepository_find"
     },
     {
       "relation": "calls",
@@ -47110,9 +47110,9 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepository_questionrepository_findwithmaterial",
-      "target": "app_repositories_questionrepository_php_question",
-      "confidence_score": 1.0
+      "target": "app_repositories_questionrepository_php_question"
     },
     {
       "relation": "calls",
@@ -47154,9 +47154,9 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L114",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_questionrepository_questionrepository_hasunansweredlowerdifficulty",
-      "target": "app_repositories_questionrepository_php_question",
-      "confidence_score": 1.0
+      "target": "app_repositories_questionrepository_php_question"
     },
     {
       "relation": "references",
@@ -47220,9 +47220,9 @@
       "source_file": "app/Repositories/RoleRepository.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_rolerepository",
-      "target": "app_repositories_rolerepository_php_role",
-      "confidence_score": 1.0
+      "target": "app_repositories_rolerepository_php_role"
     },
     {
       "relation": "contains",
@@ -47261,9 +47261,9 @@
       "source_file": "app/Repositories/RoleRepository.php",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_rolerepository_rolerepository",
-      "target": "repositories_rolerepository_rolerepository_findbyrolename",
-      "confidence_score": 1.0
+      "target": "repositories_rolerepository_rolerepository_findbyrolename"
     },
     {
       "relation": "implements",
@@ -47282,9 +47282,9 @@
       "source_file": "app/Services/User/StudentService.php",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "user_studentservice",
-      "target": "rolerepositoryinterface",
-      "confidence_score": 1.0
+      "target": "rolerepositoryinterface"
     },
     {
       "relation": "imports",
@@ -47293,9 +47293,9 @@
       "source_file": "app/Services/User/UserService.php",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "user_userservice",
-      "target": "rolerepositoryinterface",
-      "confidence_score": 1.0
+      "target": "rolerepositoryinterface"
     },
     {
       "relation": "references",
@@ -47315,9 +47315,9 @@
       "source_file": "app/Repositories/RoleRepository.php",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_rolerepository_rolerepository_all",
-      "target": "app_repositories_rolerepository_php_role",
-      "confidence_score": 1.0
+      "target": "app_repositories_rolerepository_php_role"
     },
     {
       "relation": "references",
@@ -47326,9 +47326,9 @@
       "source_file": "app/Repositories/RoleRepository.php",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_rolerepository_rolerepository_findbyrolename",
-      "target": "app_repositories_rolerepository_php_role",
-      "confidence_score": 1.0
+      "target": "app_repositories_rolerepository_php_role"
     },
     {
       "relation": "imports",
@@ -47476,9 +47476,9 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository",
-      "target": "app_repositories_susresultrepository_php_susanswer",
-      "confidence_score": 1.0
+      "target": "app_repositories_susresultrepository_php_susanswer"
     },
     {
       "relation": "imports",
@@ -47528,9 +47528,9 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository_susresultrepository",
-      "target": "repositories_susresultrepository_susresultrepository_createanswer",
-      "confidence_score": 1.0
+      "target": "repositories_susresultrepository_susresultrepository_createanswer"
     },
     {
       "relation": "method",
@@ -47558,9 +47558,9 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository_susresultrepository",
-      "target": "repositories_susresultrepository_susresultrepository_getaveragevalueforquestion",
-      "confidence_score": 1.0
+      "target": "repositories_susresultrepository_susresultrepository_getaveragevalueforquestion"
     },
     {
       "relation": "method",
@@ -47568,9 +47568,9 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository_susresultrepository",
-      "target": "repositories_susresultrepository_susresultrepository_getorderedquestions",
-      "confidence_score": 1.0
+      "target": "repositories_susresultrepository_susresultrepository_getorderedquestions"
     },
     {
       "relation": "implements",
@@ -47644,9 +47644,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository_susresultrepository_getorderedquestions",
-      "target": "app_repositories_susresultrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_susresultrepository_php_collection"
     },
     {
       "relation": "references",
@@ -47655,9 +47655,9 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository_susresultrepository_createanswer",
-      "target": "app_repositories_susresultrepository_php_susanswer",
-      "confidence_score": 1.0
+      "target": "app_repositories_susresultrepository_php_susanswer"
     },
     {
       "relation": "calls",
@@ -47666,9 +47666,9 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_susresultrepository_susresultrepository_getaveragevalueforquestion",
-      "target": "app_repositories_susresultrepository_php_susanswer",
-      "confidence_score": 1.0
+      "target": "app_repositories_susresultrepository_php_susanswer"
     },
     {
       "relation": "imports",
@@ -48021,9 +48021,9 @@
       "source_file": "app/Repositories/UserRepository.php",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_userrepository_userrepository",
-      "target": "repositories_userrepository_userrepository_getstudentsneedingattention",
-      "confidence_score": 1.0
+      "target": "repositories_userrepository_userrepository_getstudentsneedingattention"
     },
     {
       "relation": "method",
@@ -48226,9 +48226,9 @@
       "source_file": "app/Repositories/UserRepository.php",
       "source_location": "L167",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "repositories_userrepository_userrepository_getstudentsneedingattention",
-      "target": "app_repositories_userrepository_php_user",
-      "confidence_score": 1.0
+      "target": "app_repositories_userrepository_php_user"
     },
     {
       "relation": "calls",
@@ -48347,9 +48347,9 @@
       "source_location": "L165",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "repositories_userrepository_userrepository_getstudentsneedingattention",
-      "target": "app_repositories_userrepository_php_collection",
-      "confidence_score": 1.0
+      "target": "app_repositories_userrepository_php_collection"
     },
     {
       "relation": "contains",
@@ -49193,9 +49193,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveEngineService.php",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptiveengineservice_adaptiveengineservice",
-      "target": "adaptive_adaptiveengineservice_adaptiveengineservice_construct",
-      "confidence_score": 1.0
+      "target": "adaptive_adaptiveengineservice_adaptiveengineservice_construct"
     },
     {
       "relation": "method",
@@ -49544,9 +49544,9 @@
       "source_file": "app/Services/Adaptive/AdaptiveManagementService.php",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adaptive_adaptivemanagementservice_adaptivemanagementservice",
-      "target": "adaptive_adaptivemanagementservice_adaptivemanagementservice_construct",
-      "confidence_score": 1.0
+      "target": "adaptive_adaptivemanagementservice_adaptivemanagementservice_construct"
     },
     {
       "relation": "method",
@@ -50857,9 +50857,9 @@
       "source_file": "app/Services/Analytics/SusResultService.php",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "analytics_susresultservice",
-      "target": "app_services_analytics_susresultservice_php_collection",
-      "confidence_score": 1.0
+      "target": "app_services_analytics_susresultservice_php_collection"
     },
     {
       "relation": "imports",
@@ -50999,9 +50999,9 @@
       "source_file": "app/Services/Analytics/SusResultService.php",
       "source_location": "L284",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "analytics_susresultservice_susresultservice",
-      "target": "analytics_susresultservice_susresultservice_getorderedquestions",
-      "confidence_score": 1.0
+      "target": "analytics_susresultservice_susresultservice_getorderedquestions"
     },
     {
       "relation": "method",
@@ -51215,9 +51215,9 @@
       "source_file": "app/Services/Analytics/SusResultService.php",
       "source_location": "L151",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "analytics_susresultservice_susresultservice_calculateaverageperitem",
-      "target": "analytics_susresultservice_susresultservice_getorderedquestions",
-      "confidence_score": 1.0
+      "target": "analytics_susresultservice_susresultservice_getorderedquestions"
     },
     {
       "relation": "calls",
@@ -51237,9 +51237,9 @@
       "source_location": "L284",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "analytics_susresultservice_susresultservice_getorderedquestions",
-      "target": "app_services_analytics_susresultservice_php_collection",
-      "confidence_score": 1.0
+      "target": "app_services_analytics_susresultservice_php_collection"
     },
     {
       "relation": "contains",
@@ -53298,7 +53298,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
-      "source_location": "L7",
+      "source_location": "L23",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "lms_quizsubmissionservice",

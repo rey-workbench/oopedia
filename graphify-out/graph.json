@@ -3231,7 +3231,7 @@
       "label": "createSurvey()",
       "file_type": "code",
       "source_file": "app/Contracts/Services/UeqSurveyServiceInterface.php",
-      "source_location": "L21",
+      "source_location": "L24",
       "id": "services_ueqsurveyserviceinterface_createsurvey",
       "community": 65,
       "norm_label": "createsurvey()"
@@ -3240,7 +3240,7 @@
       "label": "UeqSurvey",
       "file_type": "code",
       "source_file": "app/Contracts/Services/UeqSurveyServiceInterface.php",
-      "source_location": "L21",
+      "source_location": "L24",
       "id": "app_contracts_services_ueqsurveyserviceinterface_php_ueqsurvey",
       "community": 65,
       "norm_label": "ueqsurvey"
@@ -3249,7 +3249,7 @@
       "label": "calculateAverages()",
       "file_type": "code",
       "source_file": "app/Contracts/Services/UeqSurveyServiceInterface.php",
-      "source_location": "L23",
+      "source_location": "L26",
       "id": "services_ueqsurveyserviceinterface_calculateaverages",
       "community": 65,
       "norm_label": "calculateaverages()"
@@ -3258,7 +3258,7 @@
       "label": "calculateStatisticalAnalysis()",
       "file_type": "code",
       "source_file": "app/Contracts/Services/UeqSurveyServiceInterface.php",
-      "source_location": "L25",
+      "source_location": "L28",
       "id": "services_ueqsurveyserviceinterface_calculatestatisticalanalysis",
       "community": 65,
       "norm_label": "calculatestatisticalanalysis()"
@@ -4826,7 +4826,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L1",
       "id": "admin_adaptiveactioncontroller",
-      "community": 48,
+      "community": 86,
       "norm_label": "adaptiveactioncontroller.php"
     },
     {
@@ -4835,7 +4835,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L15",
       "id": "admin_adaptiveactioncontroller_adaptiveactioncontroller",
-      "community": 48,
+      "community": 86,
       "norm_label": "adaptiveactioncontroller"
     },
     {
@@ -4844,7 +4844,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L17",
       "id": "admin_adaptiveactioncontroller_adaptiveactioncontroller_construct",
-      "community": 48,
+      "community": 86,
       "norm_label": ".__construct()"
     },
     {
@@ -4853,7 +4853,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L21",
       "id": "admin_adaptiveactioncontroller_adaptiveactioncontroller_update",
-      "community": 48,
+      "community": 86,
       "norm_label": ".update()"
     },
     {
@@ -4862,7 +4862,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L21",
       "id": "updateadaptiveactionrequest",
-      "community": 48,
+      "community": 86,
       "norm_label": "updateadaptiveactionrequest"
     },
     {
@@ -4871,7 +4871,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L21",
       "id": "app_http_controllers_admin_adaptiveactioncontroller_php_adaptiveaction",
-      "community": 48,
+      "community": 86,
       "norm_label": "adaptiveaction"
     },
     {
@@ -4880,7 +4880,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L21",
       "id": "app_http_controllers_admin_adaptiveactioncontroller_php_redirectresponse",
-      "community": 48,
+      "community": 86,
       "norm_label": "redirectresponse"
     },
     {
@@ -4889,7 +4889,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L29",
       "id": "admin_adaptiveactioncontroller_adaptiveactioncontroller_store",
-      "community": 48,
+      "community": 86,
       "norm_label": ".store()"
     },
     {
@@ -4898,7 +4898,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L29",
       "id": "storeadaptiveactionrequest",
-      "community": 48,
+      "community": 86,
       "norm_label": "storeadaptiveactionrequest"
     },
     {
@@ -4907,7 +4907,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L37",
       "id": "admin_adaptiveactioncontroller_adaptiveactioncontroller_destroy",
-      "community": 48,
+      "community": 86,
       "norm_label": ".destroy()"
     },
     {
@@ -4916,7 +4916,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L1",
       "id": "admin_adaptiverulecontroller",
-      "community": 48,
+      "community": 49,
       "norm_label": "adaptiverulecontroller.php"
     },
     {
@@ -4925,7 +4925,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L18",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller",
-      "community": 48,
+      "community": 49,
       "norm_label": "adaptiverulecontroller"
     },
     {
@@ -4934,7 +4934,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L20",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_construct",
-      "community": 48,
+      "community": 49,
       "norm_label": ".__construct()"
     },
     {
@@ -4943,7 +4943,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L26",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_create",
-      "community": 48,
+      "community": 49,
       "norm_label": ".create()"
     },
     {
@@ -4952,7 +4952,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L26",
       "id": "app_http_controllers_admin_adaptiverulecontroller_php_response",
-      "community": 48,
+      "community": 49,
       "norm_label": "response"
     },
     {
@@ -4961,7 +4961,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L34",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_edit",
-      "community": 48,
+      "community": 49,
       "norm_label": ".edit()"
     },
     {
@@ -4970,7 +4970,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L34",
       "id": "app_http_controllers_admin_adaptiverulecontroller_php_adaptiverule",
-      "community": 48,
+      "community": 49,
       "norm_label": "adaptiverule"
     },
     {
@@ -4979,7 +4979,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L43",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_index",
-      "community": 48,
+      "community": 49,
       "norm_label": ".index()"
     },
     {
@@ -4988,7 +4988,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L61",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_store",
-      "community": 48,
+      "community": 49,
       "norm_label": ".store()"
     },
     {
@@ -4997,7 +4997,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L61",
       "id": "storeadaptiverulerequest",
-      "community": 48,
+      "community": 49,
       "norm_label": "storeadaptiverulerequest"
     },
     {
@@ -5006,7 +5006,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L61",
       "id": "app_http_controllers_admin_adaptiverulecontroller_php_redirectresponse",
-      "community": 48,
+      "community": 49,
       "norm_label": "redirectresponse"
     },
     {
@@ -5015,7 +5015,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L69",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_update",
-      "community": 48,
+      "community": 49,
       "norm_label": ".update()"
     },
     {
@@ -5024,7 +5024,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L69",
       "id": "updateadaptiverulerequest",
-      "community": 48,
+      "community": 49,
       "norm_label": "updateadaptiverulerequest"
     },
     {
@@ -5033,7 +5033,7 @@
       "source_file": "app/Http/Controllers/Admin/AdaptiveRuleController.php",
       "source_location": "L77",
       "id": "admin_adaptiverulecontroller_adaptiverulecontroller_destroy",
-      "community": 48,
+      "community": 49,
       "norm_label": ".destroy()"
     },
     {
@@ -5654,7 +5654,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L1",
       "id": "admin_mslqcontroller",
-      "community": 0,
+      "community": 129,
       "norm_label": "mslqcontroller.php"
     },
     {
@@ -5663,7 +5663,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L15",
       "id": "admin_mslqcontroller_mslqcontroller",
-      "community": 0,
+      "community": 129,
       "norm_label": "mslqcontroller"
     },
     {
@@ -5672,7 +5672,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L17",
       "id": "admin_mslqcontroller_mslqcontroller_construct",
-      "community": 0,
+      "community": 129,
       "norm_label": ".__construct()"
     },
     {
@@ -5681,7 +5681,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L22",
       "id": "admin_mslqcontroller_mslqcontroller_index",
-      "community": 0,
+      "community": 129,
       "norm_label": ".index()"
     },
     {
@@ -5690,7 +5690,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L22",
       "id": "app_http_controllers_admin_mslqcontroller_php_request",
-      "community": 0,
+      "community": 129,
       "norm_label": "request"
     },
     {
@@ -5699,7 +5699,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L22",
       "id": "app_http_controllers_admin_mslqcontroller_php_response",
-      "community": 0,
+      "community": 129,
       "norm_label": "response"
     },
     {
@@ -5708,7 +5708,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L45",
       "id": "admin_mslqcontroller_mslqcontroller_show",
-      "community": 0,
+      "community": 129,
       "norm_label": ".show()"
     },
     {
@@ -5717,7 +5717,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L54",
       "id": "admin_mslqcontroller_mslqcontroller_export",
-      "community": 0,
+      "community": 129,
       "norm_label": ".export()"
     },
     {
@@ -5726,7 +5726,7 @@
       "source_file": "app/Http/Controllers/Admin/MslqController.php",
       "source_location": "L54",
       "id": "app_http_controllers_admin_mslqcontroller_php_streamedresponse",
-      "community": 0,
+      "community": 129,
       "norm_label": "streamedresponse"
     },
     {
@@ -5807,7 +5807,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L1",
       "id": "admin_questioncontroller",
-      "community": 49,
+      "community": 167,
       "norm_label": "questioncontroller.php"
     },
     {
@@ -5816,7 +5816,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L21",
       "id": "admin_questioncontroller_questioncontroller",
-      "community": 49,
+      "community": 167,
       "norm_label": "questioncontroller"
     },
     {
@@ -5825,7 +5825,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L23",
       "id": "admin_questioncontroller_questioncontroller_construct",
-      "community": 49,
+      "community": 167,
       "norm_label": ".__construct()"
     },
     {
@@ -5834,7 +5834,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L28",
       "id": "admin_questioncontroller_questioncontroller_index",
-      "community": 49,
+      "community": 167,
       "norm_label": ".index()"
     },
     {
@@ -5843,7 +5843,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L28",
       "id": "app_http_controllers_admin_questioncontroller_php_request",
-      "community": 49,
+      "community": 167,
       "norm_label": "request"
     },
     {
@@ -5852,7 +5852,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L28",
       "id": "app_http_controllers_admin_questioncontroller_php_response",
-      "community": 49,
+      "community": 167,
       "norm_label": "response"
     },
     {
@@ -5861,7 +5861,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L45",
       "id": "admin_questioncontroller_questioncontroller_create",
-      "community": 49,
+      "community": 167,
       "norm_label": ".create()"
     },
     {
@@ -5870,7 +5870,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L45",
       "id": "app_http_controllers_admin_questioncontroller_php_redirectresponse",
-      "community": 49,
+      "community": 167,
       "norm_label": "redirectresponse"
     },
     {
@@ -5879,7 +5879,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L67",
       "id": "admin_questioncontroller_questioncontroller_store",
-      "community": 49,
+      "community": 167,
       "norm_label": ".store()"
     },
     {
@@ -5888,7 +5888,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L67",
       "id": "storequestionrequest",
-      "community": 49,
+      "community": 167,
       "norm_label": "storequestionrequest"
     },
     {
@@ -5897,7 +5897,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L90",
       "id": "admin_questioncontroller_questioncontroller_edit",
-      "community": 49,
+      "community": 167,
       "norm_label": ".edit()"
     },
     {
@@ -5906,7 +5906,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L108",
       "id": "admin_questioncontroller_questioncontroller_update",
-      "community": 49,
+      "community": 167,
       "norm_label": ".update()"
     },
     {
@@ -5915,7 +5915,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L108",
       "id": "updatequestionrequest",
-      "community": 49,
+      "community": 167,
       "norm_label": "updatequestionrequest"
     },
     {
@@ -5924,7 +5924,7 @@
       "source_file": "app/Http/Controllers/Admin/QuestionController.php",
       "source_location": "L133",
       "id": "admin_questioncontroller_questioncontroller_destroy",
-      "community": 49,
+      "community": 167,
       "norm_label": ".destroy()"
     },
     {
@@ -6014,7 +6014,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L1",
       "id": "admin_ueqsurveycontroller",
-      "community": 98,
+      "community": 151,
       "norm_label": "ueqsurveycontroller.php"
     },
     {
@@ -6023,7 +6023,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L14",
       "id": "admin_ueqsurveycontroller_ueqsurveycontroller",
-      "community": 98,
+      "community": 151,
       "norm_label": "ueqsurveycontroller"
     },
     {
@@ -6032,7 +6032,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L16",
       "id": "admin_ueqsurveycontroller_ueqsurveycontroller_construct",
-      "community": 98,
+      "community": 151,
       "norm_label": ".__construct()"
     },
     {
@@ -6041,7 +6041,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L20",
       "id": "admin_ueqsurveycontroller_ueqsurveycontroller_index",
-      "community": 98,
+      "community": 151,
       "norm_label": ".index()"
     },
     {
@@ -6050,7 +6050,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L20",
       "id": "app_http_controllers_admin_ueqsurveycontroller_php_request",
-      "community": 98,
+      "community": 151,
       "norm_label": "request"
     },
     {
@@ -6059,7 +6059,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L20",
       "id": "app_http_controllers_admin_ueqsurveycontroller_php_response",
-      "community": 98,
+      "community": 151,
       "norm_label": "response"
     },
     {
@@ -6068,7 +6068,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L40",
       "id": "admin_ueqsurveycontroller_ueqsurveycontroller_export",
-      "community": 98,
+      "community": 151,
       "norm_label": ".export()"
     },
     {
@@ -6077,7 +6077,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L40",
       "id": "app_http_controllers_admin_ueqsurveycontroller_php_streamedresponse",
-      "community": 98,
+      "community": 151,
       "norm_label": "streamedresponse"
     },
     {
@@ -6086,7 +6086,7 @@
       "source_file": "app/Http/Controllers/Admin/UeqSurveyController.php",
       "source_location": "L146",
       "id": "admin_ueqsurveycontroller_ueqsurveycontroller_show",
-      "community": 98,
+      "community": 151,
       "norm_label": ".show()"
     },
     {
@@ -6158,7 +6158,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L1",
       "id": "auth_logincontroller",
-      "community": 80,
+      "community": 3,
       "norm_label": "logincontroller.php"
     },
     {
@@ -6167,7 +6167,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L17",
       "id": "auth_logincontroller_logincontroller",
-      "community": 80,
+      "community": 3,
       "norm_label": "logincontroller"
     },
     {
@@ -6176,7 +6176,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L19",
       "id": "auth_logincontroller_logincontroller_construct",
-      "community": 80,
+      "community": 3,
       "norm_label": ".__construct()"
     },
     {
@@ -6185,7 +6185,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L24",
       "id": "auth_logincontroller_logincontroller_create",
-      "community": 80,
+      "community": 3,
       "norm_label": ".create()"
     },
     {
@@ -6194,7 +6194,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L24",
       "id": "app_http_controllers_auth_logincontroller_php_response",
-      "community": 80,
+      "community": 3,
       "norm_label": "response"
     },
     {
@@ -6203,7 +6203,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L29",
       "id": "auth_logincontroller_logincontroller_store",
-      "community": 80,
+      "community": 3,
       "norm_label": ".store()"
     },
     {
@@ -6212,7 +6212,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L29",
       "id": "loginrequest",
-      "community": 80,
+      "community": 3,
       "norm_label": "loginrequest"
     },
     {
@@ -6221,7 +6221,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L29",
       "id": "app_http_controllers_auth_logincontroller_php_redirectresponse",
-      "community": 80,
+      "community": 3,
       "norm_label": "redirectresponse"
     },
     {
@@ -6230,7 +6230,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L68",
       "id": "auth_logincontroller_logincontroller_logout",
-      "community": 80,
+      "community": 3,
       "norm_label": ".logout()"
     },
     {
@@ -6239,7 +6239,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L68",
       "id": "app_http_controllers_auth_logincontroller_php_request",
-      "community": 80,
+      "community": 3,
       "norm_label": "request"
     },
     {
@@ -6248,7 +6248,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L77",
       "id": "auth_logincontroller_logincontroller_home",
-      "community": 80,
+      "community": 3,
       "norm_label": ".home()"
     },
     {
@@ -6257,7 +6257,7 @@
       "source_file": "app/Http/Controllers/Auth/LoginController.php",
       "source_location": "L96",
       "id": "auth_logincontroller_logincontroller_landing",
-      "community": 80,
+      "community": 3,
       "norm_label": ".landing()"
     },
     {
@@ -6680,7 +6680,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L1",
       "id": "mahasiswa_dashboardcontroller",
-      "community": 127,
+      "community": 152,
       "norm_label": "dashboardcontroller.php"
     },
     {
@@ -6689,7 +6689,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L13",
       "id": "mahasiswa_dashboardcontroller_dashboardcontroller",
-      "community": 127,
+      "community": 152,
       "norm_label": "dashboardcontroller"
     },
     {
@@ -6698,7 +6698,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L15",
       "id": "mahasiswa_dashboardcontroller_dashboardcontroller_construct",
-      "community": 127,
+      "community": 152,
       "norm_label": ".__construct()"
     },
     {
@@ -6707,7 +6707,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L21",
       "id": "mahasiswa_dashboardcontroller_dashboardcontroller_index",
-      "community": 127,
+      "community": 152,
       "norm_label": ".index()"
     },
     {
@@ -6716,7 +6716,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L21",
       "id": "app_http_controllers_mahasiswa_dashboardcontroller_php_response",
-      "community": 127,
+      "community": 152,
       "norm_label": "response"
     },
     {
@@ -6725,7 +6725,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L30",
       "id": "mahasiswa_dashboardcontroller_dashboardcontroller_inprogress",
-      "community": 127,
+      "community": 152,
       "norm_label": ".inprogress()"
     },
     {
@@ -6734,7 +6734,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L39",
       "id": "mahasiswa_dashboardcontroller_dashboardcontroller_complete",
-      "community": 127,
+      "community": 152,
       "norm_label": ".complete()"
     },
     {
@@ -6743,7 +6743,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/DashboardController.php",
       "source_location": "L48",
       "id": "mahasiswa_dashboardcontroller_dashboardcontroller_leaderboard",
-      "community": 127,
+      "community": 152,
       "norm_label": ".leaderboard()"
     },
     {
@@ -6932,7 +6932,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L1",
       "id": "mahasiswa_mslqcontroller",
-      "community": 0,
+      "community": 145,
       "norm_label": "mslqcontroller.php"
     },
     {
@@ -6941,7 +6941,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L18",
       "id": "mahasiswa_mslqcontroller_mslqcontroller",
-      "community": 0,
+      "community": 145,
       "norm_label": "mslqcontroller"
     },
     {
@@ -6950,7 +6950,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L20",
       "id": "mahasiswa_mslqcontroller_mslqcontroller_construct",
-      "community": 0,
+      "community": 145,
       "norm_label": ".__construct()"
     },
     {
@@ -6959,7 +6959,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L25",
       "id": "mahasiswa_mslqcontroller_mslqcontroller_create",
-      "community": 0,
+      "community": 145,
       "norm_label": ".create()"
     },
     {
@@ -6968,7 +6968,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L25",
       "id": "app_http_controllers_mahasiswa_mslqcontroller_php_request",
-      "community": 0,
+      "community": 145,
       "norm_label": "request"
     },
     {
@@ -6977,7 +6977,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L25",
       "id": "app_http_controllers_mahasiswa_mslqcontroller_php_response",
-      "community": 0,
+      "community": 145,
       "norm_label": "response"
     },
     {
@@ -6986,7 +6986,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L25",
       "id": "app_http_controllers_mahasiswa_mslqcontroller_php_redirectresponse",
-      "community": 0,
+      "community": 145,
       "norm_label": "redirectresponse"
     },
     {
@@ -6995,7 +6995,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L41",
       "id": "mahasiswa_mslqcontroller_mslqcontroller_store",
-      "community": 0,
+      "community": 145,
       "norm_label": ".store()"
     },
     {
@@ -7004,7 +7004,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L41",
       "id": "storemslqrequest",
-      "community": 0,
+      "community": 145,
       "norm_label": "storemslqrequest"
     },
     {
@@ -7013,7 +7013,7 @@
       "source_file": "app/Http/Controllers/Mahasiswa/MslqController.php",
       "source_location": "L76",
       "id": "mahasiswa_mslqcontroller_mslqcontroller_show",
-      "community": 0,
+      "community": 145,
       "norm_label": ".show()"
     },
     {
@@ -7490,7 +7490,7 @@
       "source_file": "app/Http/Middleware/HandleInertiaRequests.php",
       "source_location": "L1",
       "id": "middleware_handleinertiarequests",
-      "community": 145,
+      "community": 96,
       "norm_label": "handleinertiarequests.php"
     },
     {
@@ -7499,7 +7499,7 @@
       "source_file": "app/Http/Middleware/HandleInertiaRequests.php",
       "source_location": "L13",
       "id": "middleware_handleinertiarequests_handleinertiarequests",
-      "community": 145,
+      "community": 96,
       "norm_label": "handleinertiarequests"
     },
     {
@@ -7508,7 +7508,7 @@
       "source_file": "",
       "source_location": "",
       "id": "middleware",
-      "community": 145,
+      "community": 96,
       "norm_label": "middleware"
     },
     {
@@ -7517,7 +7517,7 @@
       "source_file": "app/Http/Middleware/HandleInertiaRequests.php",
       "source_location": "L18",
       "id": "middleware_handleinertiarequests_handleinertiarequests_construct",
-      "community": 145,
+      "community": 96,
       "norm_label": ".__construct()"
     },
     {
@@ -7526,7 +7526,7 @@
       "source_file": "app/Http/Middleware/HandleInertiaRequests.php",
       "source_location": "L24",
       "id": "middleware_handleinertiarequests_handleinertiarequests_share",
-      "community": 145,
+      "community": 96,
       "norm_label": ".share()"
     },
     {
@@ -7535,7 +7535,7 @@
       "source_file": "app/Http/Middleware/HandleInertiaRequests.php",
       "source_location": "L24",
       "id": "app_http_middleware_handleinertiarequests_php_request",
-      "community": 145,
+      "community": 96,
       "norm_label": "request"
     },
     {
@@ -7598,7 +7598,7 @@
       "source_file": "app/Http/Requests/Admin/AdaptiveAction/StoreAdaptiveActionRequest.php",
       "source_location": "L1",
       "id": "adaptiveaction_storeadaptiveactionrequest",
-      "community": 54,
+      "community": 215,
       "norm_label": "storeadaptiveactionrequest.php"
     },
     {
@@ -7607,7 +7607,7 @@
       "source_file": "app/Http/Requests/Admin/AdaptiveAction/StoreAdaptiveActionRequest.php",
       "source_location": "L9",
       "id": "adaptiveaction_storeadaptiveactionrequest_storeadaptiveactionrequest",
-      "community": 54,
+      "community": 215,
       "norm_label": "storeadaptiveactionrequest"
     },
     {
@@ -7616,7 +7616,7 @@
       "source_file": "app/Http/Requests/Admin/AdaptiveAction/StoreAdaptiveActionRequest.php",
       "source_location": "L11",
       "id": "adaptiveaction_storeadaptiveactionrequest_storeadaptiveactionrequest_rules",
-      "community": 54,
+      "community": 215,
       "norm_label": ".rules()"
     },
     {
@@ -7652,7 +7652,7 @@
       "source_file": "app/Http/Requests/Admin/AdaptiveRule/StoreAdaptiveRuleRequest.php",
       "source_location": "L1",
       "id": "adaptiverule_storeadaptiverulerequest",
-      "community": 162,
+      "community": 54,
       "norm_label": "storeadaptiverulerequest.php"
     },
     {
@@ -7661,7 +7661,7 @@
       "source_file": "app/Http/Requests/Admin/AdaptiveRule/StoreAdaptiveRuleRequest.php",
       "source_location": "L9",
       "id": "adaptiverule_storeadaptiverulerequest_storeadaptiverulerequest",
-      "community": 162,
+      "community": 54,
       "norm_label": "storeadaptiverulerequest"
     },
     {
@@ -7670,7 +7670,7 @@
       "source_file": "app/Http/Requests/Admin/AdaptiveRule/StoreAdaptiveRuleRequest.php",
       "source_location": "L11",
       "id": "adaptiverule_storeadaptiverulerequest_storeadaptiverulerequest_rules",
-      "community": 162,
+      "community": 54,
       "norm_label": ".rules()"
     },
     {
@@ -7706,7 +7706,7 @@
       "source_file": "app/Http/Requests/Auth/ForgotPasswordRequest.php",
       "source_location": "L1",
       "id": "auth_forgotpasswordrequest",
-      "community": 54,
+      "community": 216,
       "norm_label": "forgotpasswordrequest.php"
     },
     {
@@ -7715,7 +7715,7 @@
       "source_file": "app/Http/Requests/Auth/ForgotPasswordRequest.php",
       "source_location": "L9",
       "id": "auth_forgotpasswordrequest_forgotpasswordrequest",
-      "community": 54,
+      "community": 216,
       "norm_label": "forgotpasswordrequest"
     },
     {
@@ -7724,7 +7724,7 @@
       "source_file": "app/Http/Requests/Auth/ForgotPasswordRequest.php",
       "source_location": "L11",
       "id": "auth_forgotpasswordrequest_forgotpasswordrequest_rules",
-      "community": 54,
+      "community": 216,
       "norm_label": ".rules()"
     },
     {
@@ -7733,7 +7733,7 @@
       "source_file": "app/Http/Requests/Auth/LoginRequest.php",
       "source_location": "L1",
       "id": "auth_loginrequest",
-      "community": 156,
+      "community": 54,
       "norm_label": "loginrequest.php"
     },
     {
@@ -7742,7 +7742,7 @@
       "source_file": "app/Http/Requests/Auth/LoginRequest.php",
       "source_location": "L9",
       "id": "auth_loginrequest_loginrequest",
-      "community": 156,
+      "community": 54,
       "norm_label": "loginrequest"
     },
     {
@@ -7751,7 +7751,7 @@
       "source_file": "app/Http/Requests/Auth/LoginRequest.php",
       "source_location": "L11",
       "id": "auth_loginrequest_loginrequest_rules",
-      "community": 156,
+      "community": 54,
       "norm_label": ".rules()"
     },
     {
@@ -7760,7 +7760,7 @@
       "source_file": "app/Http/Requests/Auth/RegisterRequest.php",
       "source_location": "L1",
       "id": "auth_registerrequest",
-      "community": 54,
+      "community": 217,
       "norm_label": "registerrequest.php"
     },
     {
@@ -7769,7 +7769,7 @@
       "source_file": "app/Http/Requests/Auth/RegisterRequest.php",
       "source_location": "L10",
       "id": "auth_registerrequest_registerrequest",
-      "community": 54,
+      "community": 217,
       "norm_label": "registerrequest"
     },
     {
@@ -7778,7 +7778,7 @@
       "source_file": "app/Http/Requests/Auth/RegisterRequest.php",
       "source_location": "L12",
       "id": "auth_registerrequest_registerrequest_rules",
-      "community": 54,
+      "community": 217,
       "norm_label": ".rules()"
     },
     {
@@ -7877,7 +7877,7 @@
       "source_file": "app/Http/Requests/Material/UpdateMaterialRequest.php",
       "source_location": "L1",
       "id": "material_updatematerialrequest",
-      "community": 54,
+      "community": 218,
       "norm_label": "updatematerialrequest.php"
     },
     {
@@ -7886,7 +7886,7 @@
       "source_file": "app/Http/Requests/Material/UpdateMaterialRequest.php",
       "source_location": "L9",
       "id": "material_updatematerialrequest_updatematerialrequest",
-      "community": 54,
+      "community": 218,
       "norm_label": "updatematerialrequest"
     },
     {
@@ -7895,7 +7895,7 @@
       "source_file": "app/Http/Requests/Material/UpdateMaterialRequest.php",
       "source_location": "L11",
       "id": "material_updatematerialrequest_updatematerialrequest_rules",
-      "community": 54,
+      "community": 218,
       "norm_label": ".rules()"
     },
     {
@@ -7904,7 +7904,7 @@
       "source_file": "app/Http/Requests/Profile/UpdateProfileRequest.php",
       "source_location": "L1",
       "id": "profile_updateprofilerequest",
-      "community": 172,
+      "community": 54,
       "norm_label": "updateprofilerequest.php"
     },
     {
@@ -7913,7 +7913,7 @@
       "source_file": "app/Http/Requests/Profile/UpdateProfileRequest.php",
       "source_location": "L10",
       "id": "profile_updateprofilerequest_updateprofilerequest",
-      "community": 172,
+      "community": 54,
       "norm_label": "updateprofilerequest"
     },
     {
@@ -7922,7 +7922,7 @@
       "source_file": "app/Http/Requests/Profile/UpdateProfileRequest.php",
       "source_location": "L12",
       "id": "profile_updateprofilerequest_updateprofilerequest_rules",
-      "community": 172,
+      "community": 54,
       "norm_label": ".rules()"
     },
     {
@@ -8003,7 +8003,7 @@
       "source_file": "app/Http/Requests/Question/StoreQuestionRequest.php",
       "source_location": "L1",
       "id": "question_storequestionrequest",
-      "community": 54,
+      "community": 219,
       "norm_label": "storequestionrequest.php"
     },
     {
@@ -8012,7 +8012,7 @@
       "source_file": "app/Http/Requests/Question/StoreQuestionRequest.php",
       "source_location": "L12",
       "id": "question_storequestionrequest_storequestionrequest",
-      "community": 54,
+      "community": 219,
       "norm_label": "storequestionrequest"
     },
     {
@@ -8021,7 +8021,7 @@
       "source_file": "app/Http/Requests/Question/StoreQuestionRequest.php",
       "source_location": "L14",
       "id": "question_storequestionrequest_storequestionrequest_rules",
-      "community": 54,
+      "community": 219,
       "norm_label": ".rules()"
     },
     {
@@ -8111,7 +8111,7 @@
       "source_file": "app/Http/Requests/Survey/StoreMslqRequest.php",
       "source_location": "L1",
       "id": "survey_storemslqrequest",
-      "community": 106,
+      "community": 91,
       "norm_label": "storemslqrequest.php"
     },
     {
@@ -8120,7 +8120,7 @@
       "source_file": "app/Http/Requests/Survey/StoreMslqRequest.php",
       "source_location": "L10",
       "id": "survey_storemslqrequest_storemslqrequest",
-      "community": 106,
+      "community": 91,
       "norm_label": "storemslqrequest"
     },
     {
@@ -8129,7 +8129,7 @@
       "source_file": "app/Http/Requests/Survey/StoreMslqRequest.php",
       "source_location": "L12",
       "id": "survey_storemslqrequest_storemslqrequest_authorize",
-      "community": 106,
+      "community": 91,
       "norm_label": ".authorize()"
     },
     {
@@ -8138,7 +8138,7 @@
       "source_file": "app/Http/Requests/Survey/StoreMslqRequest.php",
       "source_location": "L18",
       "id": "survey_storemslqrequest_storemslqrequest_rules",
-      "community": 106,
+      "community": 91,
       "norm_label": ".rules()"
     },
     {
@@ -8147,7 +8147,7 @@
       "source_file": "app/Http/Requests/Survey/StoreMslqRequest.php",
       "source_location": "L32",
       "id": "survey_storemslqrequest_storemslqrequest_messages",
-      "community": 106,
+      "community": 91,
       "norm_label": ".messages()"
     },
     {
@@ -8264,7 +8264,7 @@
       "source_file": "app/Http/Requests/User/StoreAdminRequest.php",
       "source_location": "L1",
       "id": "user_storeadminrequest",
-      "community": 181,
+      "community": 54,
       "norm_label": "storeadminrequest.php"
     },
     {
@@ -8273,7 +8273,7 @@
       "source_file": "app/Http/Requests/User/StoreAdminRequest.php",
       "source_location": "L9",
       "id": "user_storeadminrequest_storeadminrequest",
-      "community": 181,
+      "community": 54,
       "norm_label": "storeadminrequest"
     },
     {
@@ -8282,7 +8282,7 @@
       "source_file": "app/Http/Requests/User/StoreAdminRequest.php",
       "source_location": "L11",
       "id": "user_storeadminrequest_storeadminrequest_rules",
-      "community": 181,
+      "community": 54,
       "norm_label": ".rules()"
     },
     {
@@ -8363,7 +8363,7 @@
       "source_file": "app/Http/Resources/AdaptiveActionResource.php",
       "source_location": "L1",
       "id": "resources_adaptiveactionresource",
-      "community": 86,
+      "community": 141,
       "norm_label": "adaptiveactionresource.php"
     },
     {
@@ -8372,7 +8372,7 @@
       "source_file": "app/Http/Resources/AdaptiveActionResource.php",
       "source_location": "L14",
       "id": "resources_adaptiveactionresource_adaptiveactionresource",
-      "community": 86,
+      "community": 141,
       "norm_label": "adaptiveactionresource"
     },
     {
@@ -8381,7 +8381,7 @@
       "source_file": "app/Http/Resources/AdaptiveActionResource.php",
       "source_location": "L21",
       "id": "resources_adaptiveactionresource_adaptiveactionresource_toarray",
-      "community": 86,
+      "community": 141,
       "norm_label": ".toarray()"
     },
     {
@@ -8390,7 +8390,7 @@
       "source_file": "app/Http/Resources/AdaptiveActionResource.php",
       "source_location": "L21",
       "id": "app_http_resources_adaptiveactionresource_php_request",
-      "community": 86,
+      "community": 141,
       "norm_label": "request"
     },
     {
@@ -8399,7 +8399,7 @@
       "source_file": "app/Http/Resources/AdaptiveExecutionLogResource.php",
       "source_location": "L1",
       "id": "resources_adaptiveexecutionlogresource",
-      "community": 141,
+      "community": 155,
       "norm_label": "adaptiveexecutionlogresource.php"
     },
     {
@@ -8408,7 +8408,7 @@
       "source_file": "app/Http/Resources/AdaptiveExecutionLogResource.php",
       "source_location": "L21",
       "id": "resources_adaptiveexecutionlogresource_adaptiveexecutionlogresource",
-      "community": 141,
+      "community": 155,
       "norm_label": "adaptiveexecutionlogresource"
     },
     {
@@ -8417,7 +8417,7 @@
       "source_file": "app/Http/Resources/AdaptiveExecutionLogResource.php",
       "source_location": "L26",
       "id": "resources_adaptiveexecutionlogresource_adaptiveexecutionlogresource_toarray",
-      "community": 141,
+      "community": 155,
       "norm_label": ".toarray()"
     },
     {
@@ -8426,7 +8426,7 @@
       "source_file": "app/Http/Resources/AdaptiveExecutionLogResource.php",
       "source_location": "L26",
       "id": "app_http_resources_adaptiveexecutionlogresource_php_request",
-      "community": 141,
+      "community": 155,
       "norm_label": "request"
     },
     {
@@ -8435,7 +8435,7 @@
       "source_file": "app/Http/Resources/AdaptiveFactResource.php",
       "source_location": "L1",
       "id": "resources_adaptivefactresource",
-      "community": 86,
+      "community": 63,
       "norm_label": "adaptivefactresource.php"
     },
     {
@@ -8444,7 +8444,7 @@
       "source_file": "app/Http/Resources/AdaptiveFactResource.php",
       "source_location": "L14",
       "id": "resources_adaptivefactresource_adaptivefactresource",
-      "community": 86,
+      "community": 63,
       "norm_label": "adaptivefactresource"
     },
     {
@@ -8453,7 +8453,7 @@
       "source_file": "app/Http/Resources/AdaptiveFactResource.php",
       "source_location": "L21",
       "id": "resources_adaptivefactresource_adaptivefactresource_toarray",
-      "community": 86,
+      "community": 63,
       "norm_label": ".toarray()"
     },
     {
@@ -8462,7 +8462,7 @@
       "source_file": "app/Http/Resources/AdaptiveFactResource.php",
       "source_location": "L21",
       "id": "app_http_resources_adaptivefactresource_php_request",
-      "community": 86,
+      "community": 63,
       "norm_label": "request"
     },
     {
@@ -8471,7 +8471,7 @@
       "source_file": "app/Http/Resources/AdaptiveRuleResource.php",
       "source_location": "L1",
       "id": "resources_adaptiveruleresource",
-      "community": 63,
+      "community": 156,
       "norm_label": "adaptiveruleresource.php"
     },
     {
@@ -8480,7 +8480,7 @@
       "source_file": "app/Http/Resources/AdaptiveRuleResource.php",
       "source_location": "L14",
       "id": "resources_adaptiveruleresource_adaptiveruleresource",
-      "community": 63,
+      "community": 156,
       "norm_label": "adaptiveruleresource"
     },
     {
@@ -8489,7 +8489,7 @@
       "source_file": "app/Http/Resources/AdaptiveRuleResource.php",
       "source_location": "L21",
       "id": "resources_adaptiveruleresource_adaptiveruleresource_toarray",
-      "community": 63,
+      "community": 156,
       "norm_label": ".toarray()"
     },
     {
@@ -8498,7 +8498,7 @@
       "source_file": "app/Http/Resources/AdaptiveRuleResource.php",
       "source_location": "L21",
       "id": "app_http_resources_adaptiveruleresource_php_request",
-      "community": 63,
+      "community": 156,
       "norm_label": "request"
     },
     {
@@ -8507,7 +8507,7 @@
       "source_file": "app/Http/Resources/CertificateResource.php",
       "source_location": "L1",
       "id": "resources_certificateresource",
-      "community": 149,
+      "community": 141,
       "norm_label": "certificateresource.php"
     },
     {
@@ -8516,7 +8516,7 @@
       "source_file": "app/Http/Resources/CertificateResource.php",
       "source_location": "L16",
       "id": "resources_certificateresource_certificateresource",
-      "community": 149,
+      "community": 141,
       "norm_label": "certificateresource"
     },
     {
@@ -8525,7 +8525,7 @@
       "source_file": "app/Http/Resources/CertificateResource.php",
       "source_location": "L21",
       "id": "resources_certificateresource_certificateresource_toarray",
-      "community": 149,
+      "community": 141,
       "norm_label": ".toarray()"
     },
     {
@@ -8534,7 +8534,7 @@
       "source_file": "app/Http/Resources/CertificateResource.php",
       "source_location": "L21",
       "id": "app_http_resources_certificateresource_php_request",
-      "community": 149,
+      "community": 141,
       "norm_label": "request"
     },
     {
@@ -8579,7 +8579,7 @@
       "source_file": "app/Http/Resources/MaterialResource.php",
       "source_location": "L1",
       "id": "resources_materialresource",
-      "community": 1,
+      "community": 127,
       "norm_label": "materialresource.php"
     },
     {
@@ -8588,7 +8588,7 @@
       "source_file": "app/Http/Resources/MaterialResource.php",
       "source_location": "L15",
       "id": "resources_materialresource_materialresource",
-      "community": 1,
+      "community": 127,
       "norm_label": "materialresource"
     },
     {
@@ -8597,7 +8597,7 @@
       "source_file": "app/Http/Resources/MaterialResource.php",
       "source_location": "L22",
       "id": "resources_materialresource_materialresource_toarray",
-      "community": 1,
+      "community": 127,
       "norm_label": ".toarray()"
     },
     {
@@ -8606,7 +8606,7 @@
       "source_file": "app/Http/Resources/MaterialResource.php",
       "source_location": "L22",
       "id": "app_http_resources_materialresource_php_request",
-      "community": 1,
+      "community": 127,
       "norm_label": "request"
     },
     {
@@ -8615,7 +8615,7 @@
       "source_file": "app/Http/Resources/MaterialResource.php",
       "source_location": "L63",
       "id": "resources_materialresource_materialresource_shouldshowcontent",
-      "community": 1,
+      "community": 127,
       "norm_label": ".shouldshowcontent()"
     },
     {
@@ -8624,7 +8624,7 @@
       "source_file": "app/Http/Resources/MediaResource.php",
       "source_location": "L1",
       "id": "resources_mediaresource",
-      "community": 141,
+      "community": 181,
       "norm_label": "mediaresource.php"
     },
     {
@@ -8633,7 +8633,7 @@
       "source_file": "app/Http/Resources/MediaResource.php",
       "source_location": "L16",
       "id": "resources_mediaresource_mediaresource",
-      "community": 141,
+      "community": 181,
       "norm_label": "mediaresource"
     },
     {
@@ -8642,7 +8642,7 @@
       "source_file": "app/Http/Resources/MediaResource.php",
       "source_location": "L21",
       "id": "resources_mediaresource_mediaresource_toarray",
-      "community": 141,
+      "community": 181,
       "norm_label": ".toarray()"
     },
     {
@@ -8651,7 +8651,7 @@
       "source_file": "app/Http/Resources/MediaResource.php",
       "source_location": "L21",
       "id": "app_http_resources_mediaresource_php_request",
-      "community": 141,
+      "community": 181,
       "norm_label": "request"
     },
     {
@@ -8660,7 +8660,7 @@
       "source_file": "app/Http/Resources/MslqQuestionResource.php",
       "source_location": "L1",
       "id": "resources_mslqquestionresource",
-      "community": 141,
+      "community": 208,
       "norm_label": "mslqquestionresource.php"
     },
     {
@@ -8669,7 +8669,7 @@
       "source_file": "app/Http/Resources/MslqQuestionResource.php",
       "source_location": "L17",
       "id": "resources_mslqquestionresource_mslqquestionresource",
-      "community": 141,
+      "community": 208,
       "norm_label": "mslqquestionresource"
     },
     {
@@ -8678,7 +8678,7 @@
       "source_file": "app/Http/Resources/MslqQuestionResource.php",
       "source_location": "L22",
       "id": "resources_mslqquestionresource_mslqquestionresource_toarray",
-      "community": 141,
+      "community": 208,
       "norm_label": ".toarray()"
     },
     {
@@ -8687,7 +8687,7 @@
       "source_file": "app/Http/Resources/MslqQuestionResource.php",
       "source_location": "L22",
       "id": "app_http_resources_mslqquestionresource_php_request",
-      "community": 141,
+      "community": 208,
       "norm_label": "request"
     },
     {
@@ -8696,7 +8696,7 @@
       "source_file": "app/Http/Resources/MslqResultResource.php",
       "source_location": "L1",
       "id": "resources_mslqresultresource",
-      "community": 0,
+      "community": 211,
       "norm_label": "mslqresultresource.php"
     },
     {
@@ -8705,7 +8705,7 @@
       "source_file": "app/Http/Resources/MslqResultResource.php",
       "source_location": "L14",
       "id": "resources_mslqresultresource_mslqresultresource",
-      "community": 0,
+      "community": 211,
       "norm_label": "mslqresultresource"
     },
     {
@@ -8714,7 +8714,7 @@
       "source_file": "app/Http/Resources/MslqResultResource.php",
       "source_location": "L21",
       "id": "resources_mslqresultresource_mslqresultresource_toarray",
-      "community": 0,
+      "community": 211,
       "norm_label": ".toarray()"
     },
     {
@@ -8723,7 +8723,7 @@
       "source_file": "app/Http/Resources/MslqResultResource.php",
       "source_location": "L21",
       "id": "app_http_resources_mslqresultresource_php_request",
-      "community": 0,
+      "community": 211,
       "norm_label": "request"
     },
     {
@@ -8732,7 +8732,7 @@
       "source_file": "app/Http/Resources/QuestionResource.php",
       "source_location": "L1",
       "id": "resources_questionresource",
-      "community": 5,
+      "community": 162,
       "norm_label": "questionresource.php"
     },
     {
@@ -8741,7 +8741,7 @@
       "source_file": "app/Http/Resources/QuestionResource.php",
       "source_location": "L16",
       "id": "resources_questionresource_questionresource",
-      "community": 5,
+      "community": 162,
       "norm_label": "questionresource"
     },
     {
@@ -8750,7 +8750,7 @@
       "source_file": "app/Http/Resources/QuestionResource.php",
       "source_location": "L23",
       "id": "resources_questionresource_questionresource_toarray",
-      "community": 5,
+      "community": 162,
       "norm_label": ".toarray()"
     },
     {
@@ -8759,7 +8759,7 @@
       "source_file": "app/Http/Resources/QuestionResource.php",
       "source_location": "L23",
       "id": "app_http_resources_questionresource_php_request",
-      "community": 5,
+      "community": 162,
       "norm_label": "request"
     },
     {
@@ -8768,7 +8768,7 @@
       "source_file": "app/Http/Resources/QuestionResource.php",
       "source_location": "L70",
       "id": "resources_questionresource_questionresource_processhtml",
-      "community": 5,
+      "community": 162,
       "norm_label": ".processhtml()"
     },
     {
@@ -8813,7 +8813,7 @@
       "source_file": "app/Http/Resources/StudentProgressResource.php",
       "source_location": "L1",
       "id": "resources_studentprogressresource",
-      "community": 148,
+      "community": 210,
       "norm_label": "studentprogressresource.php"
     },
     {
@@ -8822,7 +8822,7 @@
       "source_file": "app/Http/Resources/StudentProgressResource.php",
       "source_location": "L14",
       "id": "resources_studentprogressresource_studentprogressresource",
-      "community": 148,
+      "community": 210,
       "norm_label": "studentprogressresource"
     },
     {
@@ -8831,7 +8831,7 @@
       "source_file": "app/Http/Resources/StudentProgressResource.php",
       "source_location": "L21",
       "id": "resources_studentprogressresource_studentprogressresource_toarray",
-      "community": 148,
+      "community": 210,
       "norm_label": ".toarray()"
     },
     {
@@ -8840,7 +8840,7 @@
       "source_file": "app/Http/Resources/StudentProgressResource.php",
       "source_location": "L21",
       "id": "app_http_resources_studentprogressresource_php_request",
-      "community": 148,
+      "community": 210,
       "norm_label": "request"
     },
     {
@@ -8921,7 +8921,7 @@
       "source_file": "app/Http/Resources/SusResultResource.php",
       "source_location": "L1",
       "id": "resources_susresultresource",
-      "community": 211,
+      "community": 212,
       "norm_label": "susresultresource.php"
     },
     {
@@ -8930,7 +8930,7 @@
       "source_file": "app/Http/Resources/SusResultResource.php",
       "source_location": "L14",
       "id": "resources_susresultresource_susresultresource",
-      "community": 211,
+      "community": 212,
       "norm_label": "susresultresource"
     },
     {
@@ -8939,7 +8939,7 @@
       "source_file": "app/Http/Resources/SusResultResource.php",
       "source_location": "L21",
       "id": "resources_susresultresource_susresultresource_toarray",
-      "community": 211,
+      "community": 212,
       "norm_label": ".toarray()"
     },
     {
@@ -8948,7 +8948,7 @@
       "source_file": "app/Http/Resources/SusResultResource.php",
       "source_location": "L21",
       "id": "app_http_resources_susresultresource_php_request",
-      "community": 211,
+      "community": 212,
       "norm_label": "request"
     },
     {
@@ -9002,7 +9002,7 @@
       "source_file": "app/Http/Resources/UeqSurveyResource.php",
       "source_location": "L14",
       "id": "resources_ueqsurveyresource_ueqsurveyresource",
-      "community": 211,
+      "community": 30,
       "norm_label": "ueqsurveyresource"
     },
     {
@@ -9200,7 +9200,7 @@
       "source_file": "app/Models/AdaptiveExecutionLog.php",
       "source_location": "L1",
       "id": "models_adaptiveexecutionlog",
-      "community": 42,
+      "community": 5,
       "norm_label": "adaptiveexecutionlog.php"
     },
     {
@@ -9209,7 +9209,7 @@
       "source_file": "app/Models/AdaptiveExecutionLog.php",
       "source_location": "L8",
       "id": "models_adaptiveexecutionlog_adaptiveexecutionlog",
-      "community": 42,
+      "community": 5,
       "norm_label": "adaptiveexecutionlog"
     },
     {
@@ -9218,7 +9218,7 @@
       "source_file": "app/Models/AdaptiveExecutionLog.php",
       "source_location": "L21",
       "id": "models_adaptiveexecutionlog_adaptiveexecutionlog_casts",
-      "community": 42,
+      "community": 5,
       "norm_label": ".casts()"
     },
     {
@@ -9227,7 +9227,7 @@
       "source_file": "app/Models/AdaptiveExecutionLog.php",
       "source_location": "L35",
       "id": "models_adaptiveexecutionlog_adaptiveexecutionlog_user",
-      "community": 42,
+      "community": 5,
       "norm_label": ".user()"
     },
     {
@@ -9236,7 +9236,7 @@
       "source_file": "app/Models/AdaptiveExecutionLog.php",
       "source_location": "L35",
       "id": "app_models_adaptiveexecutionlog_php_belongsto",
-      "community": 42,
+      "community": 5,
       "norm_label": "belongsto"
     },
     {
@@ -9353,7 +9353,7 @@
       "source_file": "",
       "source_location": "",
       "id": "hasfactory",
-      "community": 55,
+      "community": 52,
       "norm_label": "hasfactory"
     },
     {
@@ -9587,7 +9587,7 @@
       "source_file": "app/Models/MslqQuestion.php",
       "source_location": "L1",
       "id": "models_mslqquestion",
-      "community": 55,
+      "community": 52,
       "norm_label": "mslqquestion.php"
     },
     {
@@ -9596,7 +9596,7 @@
       "source_file": "app/Models/MslqQuestion.php",
       "source_location": "L14",
       "id": "models_mslqquestion_mslqquestion",
-      "community": 55,
+      "community": 52,
       "norm_label": "mslqquestion"
     },
     {
@@ -9605,7 +9605,7 @@
       "source_file": "app/Models/MslqQuestion.php",
       "source_location": "L35",
       "id": "models_mslqquestion_mslqquestion_casts",
-      "community": 55,
+      "community": 52,
       "norm_label": ".casts()"
     },
     {
@@ -9848,7 +9848,7 @@
       "source_file": "app/Models/StudentState.php",
       "source_location": "L1",
       "id": "models_studentstate",
-      "community": 67,
+      "community": 52,
       "norm_label": "studentstate.php"
     },
     {
@@ -9857,7 +9857,7 @@
       "source_file": "app/Models/StudentState.php",
       "source_location": "L41",
       "id": "models_studentstate_studentstate",
-      "community": 67,
+      "community": 52,
       "norm_label": "studentstate"
     },
     {
@@ -9866,7 +9866,7 @@
       "source_file": "app/Models/StudentState.php",
       "source_location": "L69",
       "id": "models_studentstate_studentstate_casts",
-      "community": 67,
+      "community": 52,
       "norm_label": ".casts()"
     },
     {
@@ -9875,7 +9875,7 @@
       "source_file": "app/Models/StudentState.php",
       "source_location": "L93",
       "id": "models_studentstate_studentstate_user",
-      "community": 67,
+      "community": 52,
       "norm_label": ".user()"
     },
     {
@@ -9884,7 +9884,7 @@
       "source_file": "app/Models/StudentState.php",
       "source_location": "L93",
       "id": "app_models_studentstate_php_belongsto",
-      "community": 67,
+      "community": 52,
       "norm_label": "belongsto"
     },
     {
@@ -9893,7 +9893,7 @@
       "source_file": "app/Models/SusAnswer.php",
       "source_location": "L1",
       "id": "models_susanswer",
-      "community": 52,
+      "community": 67,
       "norm_label": "susanswer.php"
     },
     {
@@ -9902,7 +9902,7 @@
       "source_file": "app/Models/SusAnswer.php",
       "source_location": "L9",
       "id": "models_susanswer_susanswer",
-      "community": 52,
+      "community": 67,
       "norm_label": "susanswer"
     },
     {
@@ -9911,7 +9911,7 @@
       "source_file": "app/Models/SusAnswer.php",
       "source_location": "L23",
       "id": "models_susanswer_susanswer_question",
-      "community": 52,
+      "community": 67,
       "norm_label": ".question()"
     },
     {
@@ -9920,7 +9920,7 @@
       "source_file": "app/Models/SusAnswer.php",
       "source_location": "L23",
       "id": "app_models_susanswer_php_belongsto",
-      "community": 52,
+      "community": 67,
       "norm_label": "belongsto"
     },
     {
@@ -10019,7 +10019,7 @@
       "source_file": "app/Models/UeqSurvey.php",
       "source_location": "L1",
       "id": "models_ueqsurvey",
-      "community": 55,
+      "community": 52,
       "norm_label": "ueqsurvey.php"
     },
     {
@@ -10028,7 +10028,7 @@
       "source_file": "app/Models/UeqSurvey.php",
       "source_location": "L46",
       "id": "models_ueqsurvey_ueqsurvey",
-      "community": 55,
+      "community": 52,
       "norm_label": "ueqsurvey"
     },
     {
@@ -10037,7 +10037,7 @@
       "source_file": "app/Models/UeqSurvey.php",
       "source_location": "L89",
       "id": "models_ueqsurvey_ueqsurvey_user",
-      "community": 55,
+      "community": 52,
       "norm_label": ".user()"
     },
     {
@@ -10046,7 +10046,7 @@
       "source_file": "app/Models/UeqSurvey.php",
       "source_location": "L89",
       "id": "app_models_ueqsurvey_php_belongsto",
-      "community": 55,
+      "community": 52,
       "norm_label": "belongsto"
     },
     {
@@ -10388,7 +10388,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L1",
       "id": "repositories_adaptiveactionrepository",
-      "community": 48,
+      "community": 80,
       "norm_label": "adaptiveactionrepository.php"
     },
     {
@@ -10397,7 +10397,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L11",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository",
-      "community": 48,
+      "community": 80,
       "norm_label": "adaptiveactionrepository"
     },
     {
@@ -10415,7 +10415,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L13",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_find",
-      "community": 48,
+      "community": 80,
       "norm_label": ".find()"
     },
     {
@@ -10424,7 +10424,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L13",
       "id": "app_repositories_adaptiveactionrepository_php_adaptiveaction",
-      "community": 48,
+      "community": 80,
       "norm_label": "adaptiveaction"
     },
     {
@@ -10433,7 +10433,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L18",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_findbyids",
-      "community": 48,
+      "community": 80,
       "norm_label": ".findbyids()"
     },
     {
@@ -10442,7 +10442,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L18",
       "id": "app_repositories_adaptiveactionrepository_php_collection",
-      "community": 48,
+      "community": 80,
       "norm_label": "collection"
     },
     {
@@ -10451,7 +10451,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L23",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_create",
-      "community": 48,
+      "community": 80,
       "norm_label": ".create()"
     },
     {
@@ -10460,7 +10460,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L28",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_update",
-      "community": 48,
+      "community": 80,
       "norm_label": ".update()"
     },
     {
@@ -10469,7 +10469,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L41",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_delete",
-      "community": 48,
+      "community": 80,
       "norm_label": ".delete()"
     },
     {
@@ -10478,7 +10478,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L52",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_count",
-      "community": 48,
+      "community": 80,
       "norm_label": ".count()"
     },
     {
@@ -10487,7 +10487,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L57",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_allkeyedbyid",
-      "community": 48,
+      "community": 80,
       "norm_label": ".allkeyedbyid()"
     },
     {
@@ -10496,7 +10496,7 @@
       "source_file": "app/Repositories/AdaptiveActionRepository.php",
       "source_location": "L62",
       "id": "repositories_adaptiveactionrepository_adaptiveactionrepository_getallforresources",
-      "community": 48,
+      "community": 80,
       "norm_label": ".getallforresources()"
     },
     {
@@ -10505,7 +10505,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L1",
       "id": "repositories_adaptiveexecutionlogrepository",
-      "community": 42,
+      "community": 149,
       "norm_label": "adaptiveexecutionlogrepository.php"
     },
     {
@@ -10514,7 +10514,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L11",
       "id": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository",
-      "community": 42,
+      "community": 149,
       "norm_label": "adaptiveexecutionlogrepository"
     },
     {
@@ -10523,7 +10523,7 @@
       "source_file": "",
       "source_location": "",
       "id": "adaptiveexecutionlogrepositoryinterface",
-      "community": 42,
+      "community": 149,
       "norm_label": "adaptiveexecutionlogrepositoryinterface"
     },
     {
@@ -10532,7 +10532,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L13",
       "id": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_count",
-      "community": 42,
+      "community": 149,
       "norm_label": ".count()"
     },
     {
@@ -10541,7 +10541,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L18",
       "id": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_getrecent",
-      "community": 42,
+      "community": 149,
       "norm_label": ".getrecent()"
     },
     {
@@ -10550,7 +10550,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L18",
       "id": "app_repositories_adaptiveexecutionlogrepository_php_collection",
-      "community": 42,
+      "community": 149,
       "norm_label": "collection"
     },
     {
@@ -10559,7 +10559,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L26",
       "id": "repositories_adaptiveexecutionlogrepository_adaptiveexecutionlogrepository_create",
-      "community": 42,
+      "community": 149,
       "norm_label": ".create()"
     },
     {
@@ -10568,7 +10568,7 @@
       "source_file": "app/Repositories/AdaptiveExecutionLogRepository.php",
       "source_location": "L26",
       "id": "app_repositories_adaptiveexecutionlogrepository_php_adaptiveexecutionlog",
-      "community": 42,
+      "community": 149,
       "norm_label": "adaptiveexecutionlog"
     },
     {
@@ -10577,7 +10577,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L1",
       "id": "repositories_adaptivefactrepository",
-      "community": 42,
+      "community": 97,
       "norm_label": "adaptivefactrepository.php"
     },
     {
@@ -10586,7 +10586,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L11",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository",
-      "community": 42,
+      "community": 97,
       "norm_label": "adaptivefactrepository"
     },
     {
@@ -10595,7 +10595,7 @@
       "source_file": "",
       "source_location": "",
       "id": "adaptivefactrepositoryinterface",
-      "community": 42,
+      "community": 97,
       "norm_label": "adaptivefactrepositoryinterface"
     },
     {
@@ -10604,7 +10604,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L13",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_find",
-      "community": 42,
+      "community": 97,
       "norm_label": ".find()"
     },
     {
@@ -10613,7 +10613,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L13",
       "id": "app_repositories_adaptivefactrepository_php_adaptivefact",
-      "community": 42,
+      "community": 97,
       "norm_label": "adaptivefact"
     },
     {
@@ -10622,7 +10622,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L18",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_updateorcreate",
-      "community": 42,
+      "community": 97,
       "norm_label": ".updateorcreate()"
     },
     {
@@ -10631,7 +10631,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L23",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_count",
-      "community": 42,
+      "community": 97,
       "norm_label": ".count()"
     },
     {
@@ -10640,7 +10640,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L28",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_getbycategory",
-      "community": 42,
+      "community": 97,
       "norm_label": ".getbycategory()"
     },
     {
@@ -10649,7 +10649,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L28",
       "id": "app_repositories_adaptivefactrepository_php_collection",
-      "community": 42,
+      "community": 97,
       "norm_label": "collection"
     },
     {
@@ -10658,7 +10658,7 @@
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L33",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_getallforresources",
-      "community": 42,
+      "community": 97,
       "norm_label": ".getallforresources()"
     },
     {
@@ -10685,7 +10685,7 @@
       "source_file": "",
       "source_location": "",
       "id": "adaptiverulerepositoryinterface",
-      "community": 12,
+      "community": 48,
       "norm_label": "adaptiverulerepositoryinterface"
     },
     {
@@ -11126,7 +11126,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L1",
       "id": "repositories_mslqrepository",
-      "community": 0,
+      "community": 91,
       "norm_label": "mslqrepository.php"
     },
     {
@@ -11135,7 +11135,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L14",
       "id": "repositories_mslqrepository_mslqrepository",
-      "community": 0,
+      "community": 91,
       "norm_label": "mslqrepository"
     },
     {
@@ -11144,7 +11144,7 @@
       "source_file": "",
       "source_location": "",
       "id": "mslqrepositoryinterface",
-      "community": 0,
+      "community": 91,
       "norm_label": "mslqrepositoryinterface"
     },
     {
@@ -11153,7 +11153,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L16",
       "id": "repositories_mslqrepository_mslqrepository_getall",
-      "community": 0,
+      "community": 91,
       "norm_label": ".getall()"
     },
     {
@@ -11162,7 +11162,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L16",
       "id": "app_repositories_mslqrepository_php_lengthawarepaginator",
-      "community": 0,
+      "community": 91,
       "norm_label": "lengthawarepaginator"
     },
     {
@@ -11171,7 +11171,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L24",
       "id": "repositories_mslqrepository_mslqrepository_getallforcalculation",
-      "community": 0,
+      "community": 91,
       "norm_label": ".getallforcalculation()"
     },
     {
@@ -11180,7 +11180,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L24",
       "id": "app_repositories_mslqrepository_php_collection",
-      "community": 0,
+      "community": 91,
       "norm_label": "collection"
     },
     {
@@ -11189,7 +11189,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L30",
       "id": "repositories_mslqrepository_mslqrepository_findwithrelations",
-      "community": 0,
+      "community": 91,
       "norm_label": ".findwithrelations()"
     },
     {
@@ -11198,7 +11198,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L30",
       "id": "app_repositories_mslqrepository_php_mslqresult",
-      "community": 0,
+      "community": 91,
       "norm_label": "mslqresult"
     },
     {
@@ -11207,7 +11207,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L35",
       "id": "repositories_mslqrepository_mslqrepository_create",
-      "community": 0,
+      "community": 91,
       "norm_label": ".create()"
     },
     {
@@ -11216,7 +11216,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L40",
       "id": "repositories_mslqrepository_mslqrepository_findexistingresult",
-      "community": 0,
+      "community": 91,
       "norm_label": ".findexistingresult()"
     },
     {
@@ -11225,7 +11225,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L47",
       "id": "repositories_mslqrepository_mslqrepository_getorderedquestions",
-      "community": 0,
+      "community": 91,
       "norm_label": ".getorderedquestions()"
     },
     {
@@ -11234,7 +11234,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L52",
       "id": "repositories_mslqrepository_mslqrepository_createanswer",
-      "community": 0,
+      "community": 91,
       "norm_label": ".createanswer()"
     },
     {
@@ -11243,7 +11243,7 @@
       "source_file": "app/Repositories/MslqRepository.php",
       "source_location": "L52",
       "id": "app_repositories_mslqrepository_php_mslqanswer",
-      "community": 0,
+      "community": 91,
       "norm_label": "mslqanswer"
     },
     {
@@ -11477,7 +11477,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L1",
       "id": "repositories_questionrepository",
-      "community": 127,
+      "community": 5,
       "norm_label": "questionrepository.php"
     },
     {
@@ -11486,7 +11486,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L15",
       "id": "repositories_questionrepository_questionrepository",
-      "community": 127,
+      "community": 5,
       "norm_label": "questionrepository"
     },
     {
@@ -11495,7 +11495,7 @@
       "source_file": "",
       "source_location": "",
       "id": "questionrepositoryinterface",
-      "community": 127,
+      "community": 5,
       "norm_label": "questionrepositoryinterface"
     },
     {
@@ -11504,7 +11504,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L17",
       "id": "repositories_questionrepository_questionrepository_find",
-      "community": 127,
+      "community": 5,
       "norm_label": ".find()"
     },
     {
@@ -11513,7 +11513,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L17",
       "id": "app_repositories_questionrepository_php_question",
-      "community": 127,
+      "community": 5,
       "norm_label": "question"
     },
     {
@@ -11522,7 +11522,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L22",
       "id": "repositories_questionrepository_questionrepository_findwithmaterial",
-      "community": 127,
+      "community": 5,
       "norm_label": ".findwithmaterial()"
     },
     {
@@ -11531,7 +11531,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L27",
       "id": "repositories_questionrepository_questionrepository_create",
-      "community": 127,
+      "community": 5,
       "norm_label": ".create()"
     },
     {
@@ -11540,7 +11540,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L32",
       "id": "repositories_questionrepository_questionrepository_delete",
-      "community": 127,
+      "community": 5,
       "norm_label": ".delete()"
     },
     {
@@ -11549,7 +11549,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L43",
       "id": "repositories_questionrepository_questionrepository_countall",
-      "community": 127,
+      "community": 5,
       "norm_label": ".countall()"
     },
     {
@@ -11558,7 +11558,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L48",
       "id": "repositories_questionrepository_questionrepository_findwithanswers",
-      "community": 127,
+      "community": 5,
       "norm_label": ".findwithanswers()"
     },
     {
@@ -11567,7 +11567,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L53",
       "id": "repositories_questionrepository_questionrepository_getbymaterialanddifficulty",
-      "community": 127,
+      "community": 5,
       "norm_label": ".getbymaterialanddifficulty()"
     },
     {
@@ -11576,7 +11576,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L53",
       "id": "app_repositories_questionrepository_php_collection",
-      "community": 127,
+      "community": 5,
       "norm_label": "collection"
     },
     {
@@ -11585,7 +11585,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L66",
       "id": "repositories_questionrepository_questionrepository_getfilteredquestions",
-      "community": 127,
+      "community": 5,
       "norm_label": ".getfilteredquestions()"
     },
     {
@@ -11594,7 +11594,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L66",
       "id": "app_repositories_questionrepository_php_lengthawarepaginator",
-      "community": 127,
+      "community": 5,
       "norm_label": "lengthawarepaginator"
     },
     {
@@ -11603,7 +11603,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L96",
       "id": "repositories_questionrepository_questionrepository_countbymaterialanddifficulty",
-      "community": 127,
+      "community": 5,
       "norm_label": ".countbymaterialanddifficulty()"
     },
     {
@@ -11612,7 +11612,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L96",
       "id": "app_repositories_questionrepository_php_questiondifficulty",
-      "community": 127,
+      "community": 5,
       "norm_label": "questiondifficulty"
     },
     {
@@ -11621,7 +11621,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L103",
       "id": "repositories_questionrepository_questionrepository_getrandommultiplechoicefromothermaterials",
-      "community": 127,
+      "community": 5,
       "norm_label": ".getrandommultiplechoicefromothermaterials()"
     },
     {
@@ -11630,7 +11630,7 @@
       "source_file": "app/Repositories/QuestionRepository.php",
       "source_location": "L112",
       "id": "repositories_questionrepository_questionrepository_hasunansweredlowerdifficulty",
-      "community": 127,
+      "community": 5,
       "norm_label": ".hasunansweredlowerdifficulty()"
     },
     {
@@ -11702,7 +11702,7 @@
       "source_file": "app/Repositories/StudentStateRepository.php",
       "source_location": "L1",
       "id": "repositories_studentstaterepository",
-      "community": 129,
+      "community": 18,
       "norm_label": "studentstaterepository.php"
     },
     {
@@ -11711,7 +11711,7 @@
       "source_file": "app/Repositories/StudentStateRepository.php",
       "source_location": "L12",
       "id": "repositories_studentstaterepository_studentstaterepository",
-      "community": 129,
+      "community": 18,
       "norm_label": "studentstaterepository"
     },
     {
@@ -11720,7 +11720,7 @@
       "source_file": "",
       "source_location": "",
       "id": "studentstaterepositoryinterface",
-      "community": 129,
+      "community": 18,
       "norm_label": "studentstaterepositoryinterface"
     },
     {
@@ -11729,7 +11729,7 @@
       "source_file": "app/Repositories/StudentStateRepository.php",
       "source_location": "L14",
       "id": "repositories_studentstaterepository_studentstaterepository_findorcreate",
-      "community": 129,
+      "community": 18,
       "norm_label": ".findorcreate()"
     },
     {
@@ -11738,7 +11738,7 @@
       "source_file": "app/Repositories/StudentStateRepository.php",
       "source_location": "L14",
       "id": "app_repositories_studentstaterepository_php_studentstate",
-      "community": 129,
+      "community": 18,
       "norm_label": "studentstate"
     },
     {
@@ -11747,7 +11747,7 @@
       "source_file": "app/Repositories/StudentStateRepository.php",
       "source_location": "L29",
       "id": "repositories_studentstaterepository_studentstaterepository_update",
-      "community": 129,
+      "community": 18,
       "norm_label": ".update()"
     },
     {
@@ -11756,7 +11756,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L1",
       "id": "repositories_susresultrepository",
-      "community": 98,
+      "community": 82,
       "norm_label": "susresultrepository.php"
     },
     {
@@ -11765,7 +11765,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L13",
       "id": "repositories_susresultrepository_susresultrepository",
-      "community": 98,
+      "community": 82,
       "norm_label": "susresultrepository"
     },
     {
@@ -11774,7 +11774,7 @@
       "source_file": "",
       "source_location": "",
       "id": "susresultrepositoryinterface",
-      "community": 98,
+      "community": 82,
       "norm_label": "susresultrepositoryinterface"
     },
     {
@@ -11783,7 +11783,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L15",
       "id": "repositories_susresultrepository_susresultrepository_create",
-      "community": 98,
+      "community": 82,
       "norm_label": ".create()"
     },
     {
@@ -11792,7 +11792,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L15",
       "id": "app_repositories_susresultrepository_php_susresult",
-      "community": 98,
+      "community": 82,
       "norm_label": "susresult"
     },
     {
@@ -11801,7 +11801,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L21",
       "id": "repositories_susresultrepository_susresultrepository_getallwithuser",
-      "community": 98,
+      "community": 82,
       "norm_label": ".getallwithuser()"
     },
     {
@@ -11810,7 +11810,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L21",
       "id": "app_repositories_susresultrepository_php_collection",
-      "community": 98,
+      "community": 82,
       "norm_label": "collection"
     },
     {
@@ -11819,7 +11819,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L32",
       "id": "repositories_susresultrepository_susresultrepository_findwithrelations",
-      "community": 98,
+      "community": 82,
       "norm_label": ".findwithrelations()"
     },
     {
@@ -11828,7 +11828,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L37",
       "id": "repositories_susresultrepository_susresultrepository_getorderedquestions",
-      "community": 98,
+      "community": 82,
       "norm_label": ".getorderedquestions()"
     },
     {
@@ -11837,7 +11837,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L42",
       "id": "repositories_susresultrepository_susresultrepository_createanswer",
-      "community": 98,
+      "community": 82,
       "norm_label": ".createanswer()"
     },
     {
@@ -11846,7 +11846,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L42",
       "id": "app_repositories_susresultrepository_php_susanswer",
-      "community": 98,
+      "community": 82,
       "norm_label": "susanswer"
     },
     {
@@ -11855,7 +11855,7 @@
       "source_file": "app/Repositories/SusResultRepository.php",
       "source_location": "L47",
       "id": "repositories_susresultrepository_susresultrepository_getaveragevalueforquestion",
-      "community": 98,
+      "community": 82,
       "norm_label": ".getaveragevalueforquestion()"
     },
     {
@@ -12147,6 +12147,24 @@
       "norm_label": "adaptiveconditionkeys"
     },
     {
+      "label": "LeaderboardConstants.php",
+      "file_type": "code",
+      "source_file": "app/Rules/Adaptive/Constants/LeaderboardConstants.php",
+      "source_location": "L1",
+      "id": "constants_leaderboardconstants",
+      "community": 220,
+      "norm_label": "leaderboardconstants.php"
+    },
+    {
+      "label": "LeaderboardConstants",
+      "file_type": "code",
+      "source_file": "app/Rules/Adaptive/Constants/LeaderboardConstants.php",
+      "source_location": "L7",
+      "id": "constants_leaderboardconstants_leaderboardconstants",
+      "community": 220,
+      "norm_label": "leaderboardconstants"
+    },
+    {
       "label": "PedagogicalConstants.php",
       "file_type": "code",
       "source_file": "app/Rules/Adaptive/Constants/PedagogicalConstants.php",
@@ -12188,7 +12206,7 @@
       "source_file": "app/Rules/Adaptive/Constants/StudentStateSchema.php",
       "source_location": "L1",
       "id": "constants_studentstateschema",
-      "community": 129,
+      "community": 18,
       "norm_label": "studentstateschema.php"
     },
     {
@@ -12197,7 +12215,7 @@
       "source_file": "app/Rules/Adaptive/Constants/StudentStateSchema.php",
       "source_location": "L9",
       "id": "constants_studentstateschema_studentstateschema",
-      "community": 129,
+      "community": 18,
       "norm_label": "studentstateschema"
     },
     {
@@ -12206,7 +12224,7 @@
       "source_file": "app/Rules/Adaptive/Constants/StudentStateSchema.php",
       "source_location": "L42",
       "id": "constants_studentstateschema_studentstateschema_defaults",
-      "community": 129,
+      "community": 18,
       "norm_label": ".defaults()"
     },
     {
@@ -12386,7 +12404,7 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L1",
       "id": "adaptive_adaptiveanalyticsservice",
-      "community": 63,
+      "community": 48,
       "norm_label": "adaptiveanalyticsservice.php"
     },
     {
@@ -12431,7 +12449,7 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L38",
       "id": "adaptive_adaptiveanalyticsservice_adaptiveanalyticsservice_getrecenttriggers",
-      "community": 141,
+      "community": 155,
       "norm_label": ".getrecenttriggers()"
     },
     {
@@ -12467,7 +12485,7 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L114",
       "id": "adaptive_adaptiveanalyticsservice_adaptiveanalyticsservice_getrulesbydiagnosis",
-      "community": 63,
+      "community": 156,
       "norm_label": ".getrulesbydiagnosis()"
     },
     {
@@ -12476,7 +12494,7 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L131",
       "id": "adaptive_adaptiveanalyticsservice_adaptiveanalyticsservice_getallfacts",
-      "community": 86,
+      "community": 63,
       "norm_label": ".getallfacts()"
     },
     {
@@ -12485,7 +12503,7 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L131",
       "id": "app_services_adaptive_adaptiveanalyticsservice_php_supportcollection",
-      "community": 86,
+      "community": 63,
       "norm_label": "supportcollection"
     },
     {
@@ -12494,7 +12512,7 @@
       "source_file": "app/Services/Adaptive/AdaptiveAnalyticsService.php",
       "source_location": "L136",
       "id": "adaptive_adaptiveanalyticsservice_adaptiveanalyticsservice_getallactions",
-      "community": 86,
+      "community": 63,
       "norm_label": ".getallactions()"
     },
     {
@@ -12764,7 +12782,7 @@
       "source_file": "app/Services/Analytics/AdminDashboardService.php",
       "source_location": "L1",
       "id": "analytics_admindashboardservice",
-      "community": 127,
+      "community": 36,
       "norm_label": "admindashboardservice.php"
     },
     {
@@ -12782,7 +12800,7 @@
       "source_file": "",
       "source_location": "",
       "id": "admindashboardserviceinterface",
-      "community": 127,
+      "community": 29,
       "norm_label": "admindashboardserviceinterface"
     },
     {
@@ -12906,7 +12924,7 @@
       "label": ".getAllMaterials()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L30",
+      "source_location": "L29",
       "id": "analytics_dashboardservice_dashboardservice_getallmaterials",
       "community": 127,
       "norm_label": ".getallmaterials()"
@@ -12915,7 +12933,7 @@
       "label": "Collection",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L30",
+      "source_location": "L29",
       "id": "app_services_analytics_dashboardservice_php_collection",
       "community": 127,
       "norm_label": "collection"
@@ -12924,7 +12942,7 @@
       "label": ".getDashboardIndexData()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L36",
+      "source_location": "L35",
       "id": "analytics_dashboardservice_dashboardservice_getdashboardindexdata",
       "community": 127,
       "norm_label": ".getdashboardindexdata()"
@@ -12933,7 +12951,7 @@
       "label": ".calculateConfiguredCounts()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L103",
+      "source_location": "L102",
       "id": "analytics_dashboardservice_dashboardservice_calculateconfiguredcounts",
       "community": 127,
       "norm_label": ".calculateconfiguredcounts()"
@@ -12942,7 +12960,7 @@
       "label": ".addActivityType()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L123",
+      "source_location": "L122",
       "id": "analytics_dashboardservice_dashboardservice_addactivitytype",
       "community": 127,
       "norm_label": ".addactivitytype()"
@@ -12951,16 +12969,25 @@
       "label": ".deduplicateActivities()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L136",
+      "source_location": "L135",
       "id": "analytics_dashboardservice_dashboardservice_deduplicateactivities",
       "community": 127,
       "norm_label": ".deduplicateactivities()"
     },
     {
+      "label": "SupportCollection",
+      "file_type": "code",
+      "source_file": "app/Services/Analytics/DashboardService.php",
+      "source_location": "L135",
+      "id": "app_services_analytics_dashboardservice_php_supportcollection",
+      "community": 127,
+      "norm_label": "supportcollection"
+    },
+    {
       "label": ".getInProgressData()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L153",
+      "source_location": "L152",
       "id": "analytics_dashboardservice_dashboardservice_getinprogressdata",
       "community": 127,
       "norm_label": ".getinprogressdata()"
@@ -12969,7 +12996,7 @@
       "label": ".getCompletedData()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L185",
+      "source_location": "L184",
       "id": "analytics_dashboardservice_dashboardservice_getcompleteddata",
       "community": 127,
       "norm_label": ".getcompleteddata()"
@@ -12978,7 +13005,7 @@
       "label": ".processMaterialsWithStats()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/DashboardService.php",
-      "source_location": "L254",
+      "source_location": "L256",
       "id": "analytics_dashboardservice_dashboardservice_processmaterialswithstats",
       "community": 127,
       "norm_label": ".processmaterialswithstats()"
@@ -12996,7 +13023,7 @@
       "label": "LeaderboardService",
       "file_type": "code",
       "source_file": "app/Services/Analytics/LeaderboardService.php",
-      "source_location": "L16",
+      "source_location": "L17",
       "id": "analytics_leaderboardservice_leaderboardservice",
       "community": 127,
       "norm_label": "leaderboardservice"
@@ -13014,7 +13041,7 @@
       "label": ".__construct()",
       "file_type": "code",
       "source_file": "app/Services/Analytics/LeaderboardService.php",
-      "source_location": "L18",
+      "source_location": "L19",
       "id": "analytics_leaderboardservice_leaderboardservice_construct",
       "community": 127,
       "norm_label": ".__construct()"
@@ -13088,7 +13115,7 @@
       "source_file": "",
       "source_location": "",
       "id": "mslqserviceinterface",
-      "community": 0,
+      "community": 129,
       "norm_label": "mslqserviceinterface"
     },
     {
@@ -13097,7 +13124,7 @@
       "source_file": "",
       "source_location": "",
       "id": "sanitizesjson",
-      "community": 98,
+      "community": 30,
       "norm_label": "sanitizesjson"
     },
     {
@@ -13196,7 +13223,7 @@
       "source_file": "app/Services/Analytics/MslqService.php",
       "source_location": "L111",
       "id": "analytics_mslqservice_mslqservice_getresultsforexport",
-      "community": 0,
+      "community": 211,
       "norm_label": ".getresultsforexport()"
     },
     {
@@ -13529,7 +13556,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L1",
       "id": "analytics_ueqsurveyservice",
-      "community": 98,
+      "community": 30,
       "norm_label": "ueqsurveyservice.php"
     },
     {
@@ -13538,7 +13565,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L16",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice",
-      "community": 98,
+      "community": 30,
       "norm_label": "ueqsurveyservice"
     },
     {
@@ -13547,7 +13574,7 @@
       "source_file": "",
       "source_location": "",
       "id": "ueqsurveyserviceinterface",
-      "community": 98,
+      "community": 30,
       "norm_label": "ueqsurveyserviceinterface"
     },
     {
@@ -13556,7 +13583,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L20",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_construct",
-      "community": 98,
+      "community": 30,
       "norm_label": ".__construct()"
     },
     {
@@ -13565,7 +13592,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L26",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_getallsurveys",
-      "community": 98,
+      "community": 30,
       "norm_label": ".getallsurveys()"
     },
     {
@@ -13574,7 +13601,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L26",
       "id": "app_services_analytics_ueqsurveyservice_php_assessmenttype",
-      "community": 98,
+      "community": 30,
       "norm_label": "assessmenttype"
     },
     {
@@ -13583,7 +13610,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L26",
       "id": "app_services_analytics_ueqsurveyservice_php_supportcollection",
-      "community": 98,
+      "community": 30,
       "norm_label": "supportcollection"
     },
     {
@@ -13592,7 +13619,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L33",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_getdistinctassessmenttypes",
-      "community": 98,
+      "community": 30,
       "norm_label": ".getdistinctassessmenttypes()"
     },
     {
@@ -13601,7 +13628,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L39",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_getsurveydetail",
-      "community": 98,
+      "community": 30,
       "norm_label": ".getsurveydetail()"
     },
     {
@@ -13610,7 +13637,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L46",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_hasusersubmitted",
-      "community": 98,
+      "community": 30,
       "norm_label": ".hasusersubmitted()"
     },
     {
@@ -13619,7 +13646,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L51",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_createsurvey",
-      "community": 98,
+      "community": 30,
       "norm_label": ".createsurvey()"
     },
     {
@@ -13628,7 +13655,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L51",
       "id": "app_services_analytics_ueqsurveyservice_php_ueqsurvey",
-      "community": 98,
+      "community": 30,
       "norm_label": "ueqsurvey"
     },
     {
@@ -13637,7 +13664,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L57",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_calculateaverages",
-      "community": 98,
+      "community": 30,
       "norm_label": ".calculateaverages()"
     },
     {
@@ -13646,7 +13673,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L128",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_calculatestatisticalanalysis",
-      "community": 98,
+      "community": 30,
       "norm_label": ".calculatestatisticalanalysis()"
     },
     {
@@ -13655,7 +13682,7 @@
       "source_file": "app/Services/Analytics/UeqSurveyService.php",
       "source_location": "L183",
       "id": "analytics_ueqsurveyservice_ueqsurveyservice_buildanswermatrix",
-      "community": 98,
+      "community": 30,
       "norm_label": ".buildanswermatrix()"
     },
     {
@@ -13853,7 +13880,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L1",
       "id": "lms_materialservice",
-      "community": 1,
+      "community": 127,
       "norm_label": "materialservice.php"
     },
     {
@@ -13862,7 +13889,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L23",
       "id": "lms_materialservice_materialservice",
-      "community": 1,
+      "community": 127,
       "norm_label": "materialservice"
     },
     {
@@ -13871,7 +13898,7 @@
       "source_file": "",
       "source_location": "",
       "id": "materialserviceinterface",
-      "community": 145,
+      "community": 96,
       "norm_label": "materialserviceinterface"
     },
     {
@@ -13880,7 +13907,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L25",
       "id": "lms_materialservice_materialservice_construct",
-      "community": 1,
+      "community": 127,
       "norm_label": ".__construct()"
     },
     {
@@ -13889,7 +13916,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L35",
       "id": "lms_materialservice_materialservice_getallmaterials",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getallmaterials()"
     },
     {
@@ -13898,7 +13925,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L35",
       "id": "app_services_lms_materialservice_php_collection",
-      "community": 1,
+      "community": 127,
       "norm_label": "collection"
     },
     {
@@ -13907,7 +13934,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L45",
       "id": "lms_materialservice_materialservice_getallordered",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getallordered()"
     },
     {
@@ -13916,7 +13943,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L52",
       "id": "lms_materialservice_materialservice_getmaterialbyid",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getmaterialbyid()"
     },
     {
@@ -13925,7 +13952,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L59",
       "id": "lms_materialservice_materialservice_creatematerial",
-      "community": 1,
+      "community": 127,
       "norm_label": ".creatematerial()"
     },
     {
@@ -13934,7 +13961,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L59",
       "id": "app_services_lms_materialservice_php_materialcreatedto",
-      "community": 1,
+      "community": 127,
       "norm_label": "materialcreatedto"
     },
     {
@@ -13943,7 +13970,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L59",
       "id": "app_services_lms_materialservice_php_material",
-      "community": 1,
+      "community": 127,
       "norm_label": "material"
     },
     {
@@ -13952,7 +13979,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L78",
       "id": "lms_materialservice_materialservice_updatematerial",
-      "community": 1,
+      "community": 127,
       "norm_label": ".updatematerial()"
     },
     {
@@ -13961,7 +13988,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L78",
       "id": "app_services_lms_materialservice_php_materialupdatedto",
-      "community": 1,
+      "community": 127,
       "norm_label": "materialupdatedto"
     },
     {
@@ -13970,7 +13997,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L103",
       "id": "lms_materialservice_materialservice_deletematerial",
-      "community": 1,
+      "community": 127,
       "norm_label": ".deletematerial()"
     },
     {
@@ -13979,7 +14006,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L123",
       "id": "lms_materialservice_materialservice_deletemedia",
-      "community": 1,
+      "community": 127,
       "norm_label": ".deletemedia()"
     },
     {
@@ -13988,7 +14015,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L143",
       "id": "lms_materialservice_materialservice_getsidebarmaterials",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getsidebarmaterials()"
     },
     {
@@ -13997,7 +14024,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L160",
       "id": "lms_materialservice_materialservice_getmaterialslist",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getmaterialslist()"
     },
     {
@@ -14006,7 +14033,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L193",
       "id": "lms_materialservice_materialservice_getmaterialdetail",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getmaterialdetail()"
     },
     {
@@ -14015,7 +14042,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L230",
       "id": "lms_materialservice_materialservice_resetmaterialprogress",
-      "community": 1,
+      "community": 127,
       "norm_label": ".resetmaterialprogress()"
     },
     {
@@ -14024,7 +14051,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L239",
       "id": "lms_materialservice_materialservice_uploadcoverimage",
-      "community": 1,
+      "community": 127,
       "norm_label": ".uploadcoverimage()"
     },
     {
@@ -14033,7 +14060,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L249",
       "id": "lms_materialservice_materialservice_deletecoverimage",
-      "community": 1,
+      "community": 127,
       "norm_label": ".deletecoverimage()"
     },
     {
@@ -14042,7 +14069,7 @@
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L260",
       "id": "lms_materialservice_materialservice_removemediafile",
-      "community": 1,
+      "community": 127,
       "norm_label": ".removemediafile()"
     },
     {
@@ -14357,7 +14384,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L1",
       "id": "lms_quizsubmissionservice",
-      "community": 42,
+      "community": 106,
       "norm_label": "quizsubmissionservice.php"
     },
     {
@@ -14366,7 +14393,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L28",
       "id": "lms_quizsubmissionservice_quizsubmissionservice",
-      "community": 42,
+      "community": 106,
       "norm_label": "quizsubmissionservice"
     },
     {
@@ -14375,7 +14402,7 @@
       "source_file": "",
       "source_location": "",
       "id": "quizsubmissionserviceinterface",
-      "community": 42,
+      "community": 106,
       "norm_label": "quizsubmissionserviceinterface"
     },
     {
@@ -14384,7 +14411,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L30",
       "id": "lms_quizsubmissionservice_quizsubmissionservice_construct",
-      "community": 42,
+      "community": 106,
       "norm_label": ".__construct()"
     },
     {
@@ -14393,7 +14420,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L42",
       "id": "lms_quizsubmissionservice_quizsubmissionservice_determinecorrectness",
-      "community": 42,
+      "community": 106,
       "norm_label": ".determinecorrectness()"
     },
     {
@@ -14402,7 +14429,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L42",
       "id": "app_services_lms_quizsubmissionservice_php_question",
-      "community": 42,
+      "community": 106,
       "norm_label": "question"
     },
     {
@@ -14411,7 +14438,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L87",
       "id": "lms_quizsubmissionservice_quizsubmissionservice_handlesubmission",
-      "community": 42,
+      "community": 106,
       "norm_label": ".handlesubmission()"
     },
     {
@@ -14420,7 +14447,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L87",
       "id": "app_services_lms_quizsubmissionservice_php_quizsubmissiondto",
-      "community": 42,
+      "community": 106,
       "norm_label": "quizsubmissiondto"
     },
     {
@@ -14429,7 +14456,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L202",
       "id": "lms_quizsubmissionservice_quizsubmissionservice_logandapplyadaptiveresult",
-      "community": 42,
+      "community": 106,
       "norm_label": ".logandapplyadaptiveresult()"
     },
     {
@@ -14438,7 +14465,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L202",
       "id": "app_services_lms_quizsubmissionservice_php_studentstate",
-      "community": 42,
+      "community": 106,
       "norm_label": "studentstate"
     },
     {
@@ -14447,7 +14474,7 @@
       "source_file": "app/Services/Lms/QuizSubmissionService.php",
       "source_location": "L230",
       "id": "lms_quizsubmissionservice_quizsubmissionservice_generateguidancedata",
-      "community": 42,
+      "community": 106,
       "norm_label": ".generateguidancedata()"
     },
     {
@@ -14546,7 +14573,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L1",
       "id": "user_performanceservice",
-      "community": 30,
+      "community": 18,
       "norm_label": "performanceservice.php"
     },
     {
@@ -14555,7 +14582,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L21",
       "id": "user_performanceservice_performanceservice",
-      "community": 30,
+      "community": 18,
       "norm_label": "performanceservice"
     },
     {
@@ -14564,7 +14591,7 @@
       "source_file": "",
       "source_location": "",
       "id": "performanceserviceinterface",
-      "community": 30,
+      "community": 18,
       "norm_label": "performanceserviceinterface"
     },
     {
@@ -14573,7 +14600,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L23",
       "id": "user_performanceservice_performanceservice_construct",
-      "community": 30,
+      "community": 18,
       "norm_label": ".__construct()"
     },
     {
@@ -14582,7 +14609,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L27",
       "id": "user_performanceservice_performanceservice_findorcreatestudentstate",
-      "community": 30,
+      "community": 18,
       "norm_label": ".findorcreatestudentstate()"
     },
     {
@@ -14591,7 +14618,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L27",
       "id": "app_services_user_performanceservice_php_studentstate",
-      "community": 30,
+      "community": 18,
       "norm_label": "studentstate"
     },
     {
@@ -14600,7 +14627,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L32",
       "id": "user_performanceservice_performanceservice_updatemetricsfrominteraction",
-      "community": 30,
+      "community": 18,
       "norm_label": ".updatemetricsfrominteraction()"
     },
     {
@@ -14609,7 +14636,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L32",
       "id": "app_services_user_performanceservice_php_interactiondto",
-      "community": 30,
+      "community": 18,
       "norm_label": "interactiondto"
     },
     {
@@ -14618,7 +14645,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L158",
       "id": "user_performanceservice_performanceservice_calculatetrend",
-      "community": 30,
+      "community": 18,
       "norm_label": ".calculatetrend()"
     },
     {
@@ -14627,7 +14654,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L184",
       "id": "user_performanceservice_performanceservice_calculatestagnantcount",
-      "community": 30,
+      "community": 18,
       "norm_label": ".calculatestagnantcount()"
     },
     {
@@ -14636,7 +14663,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L209",
       "id": "user_performanceservice_performanceservice_getstudentsessionstate",
-      "community": 30,
+      "community": 18,
       "norm_label": ".getstudentsessionstate()"
     },
     {
@@ -14645,7 +14672,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L235",
       "id": "user_performanceservice_performanceservice_syncmaterialcontext",
-      "community": 30,
+      "community": 18,
       "norm_label": ".syncmaterialcontext()"
     },
     {
@@ -14654,7 +14681,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L246",
       "id": "user_performanceservice_performanceservice_calculatescore",
-      "community": 30,
+      "community": 18,
       "norm_label": ".calculatescore()"
     },
     {
@@ -14663,7 +14690,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L246",
       "id": "app_services_user_performanceservice_php_performancescoredto",
-      "community": 30,
+      "community": 18,
       "norm_label": "performancescoredto"
     },
     {
@@ -14672,7 +14699,7 @@
       "source_file": "app/Services/User/PerformanceService.php",
       "source_location": "L275",
       "id": "user_performanceservice_performanceservice_decrementhint",
-      "community": 30,
+      "community": 18,
       "norm_label": ".decrementhint()"
     },
     {
@@ -14798,7 +14825,7 @@
       "source_file": "app/Services/User/StudentService.php",
       "source_location": "L97",
       "id": "user_studentservice_studentservice_getstudentprogressdetail",
-      "community": 37,
+      "community": 127,
       "norm_label": ".getstudentprogressdetail()"
     },
     {
@@ -14852,7 +14879,7 @@
       "source_file": "",
       "source_location": "",
       "id": "userserviceinterface",
-      "community": 94,
+      "community": 38,
       "norm_label": "userserviceinterface"
     },
     {
@@ -15243,7 +15270,7 @@
       "confidence": "EXTRACTED",
       "source_location": "L1",
       "id": "ui_floatingitem",
-      "community": 58,
+      "community": 69,
       "norm_label": "floatingitem.svelte"
     },
     {
@@ -15307,7 +15334,7 @@
       "source_file": "svelte/transition",
       "confidence": "EXTRACTED",
       "id": "transition",
-      "community": 58,
+      "community": 9,
       "norm_label": "svelte/transition"
     },
     {
@@ -15465,7 +15492,7 @@
       "confidence": "EXTRACTED",
       "source_location": "L1",
       "id": "ui_panel",
-      "community": 9,
+      "community": 58,
       "norm_label": "@/components/ui/panel.svelte"
     },
     {
@@ -15503,7 +15530,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "layout_importinstructions",
-      "community": 13,
+      "community": 58,
       "norm_label": "@/components/layout/importinstructions.svelte"
     },
     {
@@ -15566,7 +15593,7 @@
       "source_file": "resources/js/components/layout/LevelMapLegend.svelte",
       "source_location": "L1",
       "id": "layout_levelmaplegend",
-      "community": 9,
+      "community": 58,
       "norm_label": "levelmaplegend.svelte"
     },
     {
@@ -15877,7 +15904,7 @@
       "source_file": "resources/js/components/ui/Accordion.svelte",
       "source_location": "L1",
       "id": "ui_accordion",
-      "community": 58,
+      "community": 47,
       "norm_label": "accordion.svelte"
     },
     {
@@ -15897,7 +15924,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_backgroundmesh",
-      "community": 58,
+      "community": 9,
       "norm_label": "@/components/ui/backgroundmesh.svelte"
     },
     {
@@ -15907,7 +15934,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_chart",
-      "community": 58,
+      "community": 47,
       "norm_label": "@/components/ui/chart.svelte"
     },
     {
@@ -15916,7 +15943,7 @@
       "source_file": "apexcharts",
       "confidence": "EXTRACTED",
       "id": "apexcharts",
-      "community": 58,
+      "community": 47,
       "norm_label": "apexcharts"
     },
     {
@@ -15926,7 +15953,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_checkbox",
-      "community": 58,
+      "community": 47,
       "norm_label": "@/components/ui/checkbox.svelte"
     },
     {
@@ -15935,7 +15962,7 @@
       "source_file": "resources/js/utils/ids",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_utils_ids",
-      "community": 58,
+      "community": 47,
       "norm_label": "@/utils/ids"
     },
     {
@@ -15945,7 +15972,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_contentdisplay",
-      "community": 41,
+      "community": 47,
       "norm_label": "@/components/ui/contentdisplay.svelte"
     },
     {
@@ -15954,7 +15981,7 @@
       "source_file": "highlight.js",
       "confidence": "EXTRACTED",
       "id": "highlight_js",
-      "community": 41,
+      "community": 47,
       "norm_label": "highlight.js"
     },
     {
@@ -15963,7 +15990,7 @@
       "source_file": "dompurify",
       "confidence": "EXTRACTED",
       "id": "dompurify",
-      "community": 41,
+      "community": 47,
       "norm_label": "dompurify"
     },
     {
@@ -16002,7 +16029,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_fileuploadzone",
-      "community": 13,
+      "community": 58,
       "norm_label": "@/components/ui/fileuploadzone.svelte"
     },
     {
@@ -16012,7 +16039,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_imageupload",
-      "community": 41,
+      "community": 13,
       "norm_label": "@/components/ui/imageupload.svelte"
     },
     {
@@ -16022,7 +16049,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_infopanel",
-      "community": 13,
+      "community": 58,
       "norm_label": "@/components/ui/infopanel.svelte"
     },
     {
@@ -16031,7 +16058,7 @@
       "source_file": "resources/js/components/ui/MasonryCard.svelte",
       "source_location": "L1",
       "id": "ui_masonrycard",
-      "community": 58,
+      "community": 47,
       "norm_label": "masonrycard.svelte"
     },
     {
@@ -16041,7 +16068,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_modal",
-      "community": 58,
+      "community": 9,
       "norm_label": "@/components/ui/modal.svelte"
     },
     {
@@ -16050,7 +16077,7 @@
       "source_file": "focus-trap",
       "confidence": "EXTRACTED",
       "id": "focus_trap",
-      "community": 58,
+      "community": 9,
       "norm_label": "focus-trap"
     },
     {
@@ -16080,7 +16107,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_quilleditor",
-      "community": 41,
+      "community": 47,
       "norm_label": "@/components/ui/quilleditor.svelte"
     },
     {
@@ -16089,7 +16116,7 @@
       "source_file": "quill",
       "confidence": "EXTRACTED",
       "id": "quill",
-      "community": 41,
+      "community": 47,
       "norm_label": "quill"
     },
     {
@@ -16098,7 +16125,7 @@
       "source_file": "quill/dist/quill.snow.css",
       "confidence": "EXTRACTED",
       "id": "quill_snow_css",
-      "community": 41,
+      "community": 47,
       "norm_label": "quill/dist/quill.snow.css"
     },
     {
@@ -16107,7 +16134,7 @@
       "source_file": "highlight.js/styles/atom-one-dark.css",
       "confidence": "EXTRACTED",
       "id": "atom_one_dark_css",
-      "community": 41,
+      "community": 47,
       "norm_label": "highlight.js/styles/atom-one-dark.css"
     },
     {
@@ -16116,7 +16143,7 @@
       "source_file": "resources/js/components/ui/Radio.svelte",
       "source_location": "L1",
       "id": "ui_radio",
-      "community": 58,
+      "community": 47,
       "norm_label": "radio.svelte"
     },
     {
@@ -16126,7 +16153,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_section",
-      "community": 58,
+      "community": 47,
       "norm_label": "@/components/ui/section.svelte"
     },
     {
@@ -16136,7 +16163,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_select",
-      "community": 58,
+      "community": 47,
       "norm_label": "@/components/ui/select.svelte"
     },
     {
@@ -16145,7 +16172,7 @@
       "source_file": "resources/js/components/ui/Select.svelte",
       "source_location": "L94",
       "id": "ui_select_handleclickoutside",
-      "community": 58,
+      "community": 47,
       "norm_label": "handleclickoutside()"
     },
     {
@@ -16154,7 +16181,7 @@
       "source_file": "resources/js/components/ui/Skeleton.svelte",
       "source_location": "L1",
       "id": "ui_skeleton",
-      "community": 58,
+      "community": 47,
       "norm_label": "skeleton.svelte"
     },
     {
@@ -16192,7 +16219,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_textarea",
-      "community": 58,
+      "community": 47,
       "norm_label": "@/components/ui/textarea.svelte"
     },
     {
@@ -16202,7 +16229,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_toast",
-      "community": 58,
+      "community": 13,
       "norm_label": "@/components/ui/toast.svelte"
     },
     {
@@ -16212,7 +16239,7 @@
       "source_location": "L1",
       "confidence": "EXTRACTED",
       "id": "ui_toggle",
-      "community": 41,
+      "community": 88,
       "norm_label": "@/components/ui/toggle.svelte"
     },
     {
@@ -16231,7 +16258,7 @@
       "source_file": "resources/js/components/ui/index.ts",
       "source_location": "L1",
       "id": "resources_js_components_ui_index_ts_ui_index",
-      "community": 58,
+      "community": 47,
       "norm_label": "index.ts"
     },
     {
@@ -16240,7 +16267,7 @@
       "source_file": "resources/js/constants/survey.ts",
       "source_location": "L1",
       "id": "constants_survey",
-      "community": 15,
+      "community": 23,
       "norm_label": "survey.ts"
     },
     {
@@ -16249,7 +16276,7 @@
       "source_file": "resources/js/constants/survey.ts",
       "source_location": "L5",
       "id": "constants_survey_ueq_aspects",
-      "community": 15,
+      "community": 23,
       "norm_label": "ueq_aspects"
     },
     {
@@ -16258,7 +16285,7 @@
       "source_file": "resources/js/constants/survey.ts",
       "source_location": "L37",
       "id": "constants_survey_ueq_dimensions",
-      "community": 15,
+      "community": 23,
       "norm_label": "ueq_dimensions"
     },
     {
@@ -16267,7 +16294,7 @@
       "source_file": "resources/js/constants/survey.ts",
       "source_location": "L77",
       "id": "constants_survey_sus_questions",
-      "community": 15,
+      "community": 23,
       "norm_label": "sus_questions"
     },
     {
@@ -16496,7 +16523,7 @@
       "confidence": "EXTRACTED",
       "source_location": "L1",
       "id": "partials_nodepreviewpanel",
-      "community": 58,
+      "community": 11,
       "norm_label": "nodepreviewpanel.svelte"
     },
     {
@@ -16739,7 +16766,7 @@
       "source_file": "resources/js/pages/Admin/Materials/Create/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_admin_materials_create_index_svelte_create_index",
-      "community": 41,
+      "community": 13,
       "norm_label": "index.svelte"
     },
     {
@@ -16748,7 +16775,7 @@
       "source_file": "resources/js/states/Admin/MaterialState.svelte",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_states_admin_materialstate_svelte",
-      "community": 41,
+      "community": 13,
       "norm_label": "@/states/admin/materialstate.svelte"
     },
     {
@@ -16757,7 +16784,7 @@
       "source_file": "resources/js/pages/Admin/Materials/Edit/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_admin_materials_edit_index_svelte_edit_index",
-      "community": 41,
+      "community": 13,
       "norm_label": "index.svelte"
     },
     {
@@ -16919,7 +16946,7 @@
       "source_file": "resources/js/pages/Admin/Students/Import/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_admin_students_import_index_svelte_import_index",
-      "community": 13,
+      "community": 58,
       "norm_label": "index.svelte"
     },
     {
@@ -16928,7 +16955,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_states_admin_studentstate_svelte",
-      "community": 6,
+      "community": 58,
       "norm_label": "@/states/admin/studentstate.svelte"
     },
     {
@@ -17027,7 +17054,7 @@
       "source_file": "resources/js/states/Admin/UserState.svelte",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_states_admin_userstate_svelte",
-      "community": 13,
+      "community": 58,
       "norm_label": "@/states/admin/userstate.svelte"
     },
     {
@@ -17036,7 +17063,7 @@
       "source_file": "resources/js/pages/Admin/Users/Edit/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_admin_users_edit_index_svelte_edit_index",
-      "community": 13,
+      "community": 58,
       "norm_label": "index.svelte"
     },
     {
@@ -17045,7 +17072,7 @@
       "source_file": "resources/js/pages/Admin/Users/Edit/Index.svelte",
       "source_location": "L18",
       "id": "edit_index_safeupdateitems",
-      "community": 13,
+      "community": 58,
       "norm_label": "safeupdateitems"
     },
     {
@@ -17054,7 +17081,7 @@
       "source_file": "resources/js/pages/Admin/Users/Import/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_admin_users_import_index_svelte_import_index",
-      "community": 13,
+      "community": 58,
       "norm_label": "index.svelte"
     },
     {
@@ -17081,7 +17108,7 @@
       "source_file": "resources/js/pages/Admin/Users/PendingApproval/Index.svelte",
       "source_location": "L1",
       "id": "pendingapproval_index",
-      "community": 13,
+      "community": 58,
       "norm_label": "index.svelte"
     },
     {
@@ -17153,7 +17180,7 @@
       "source_file": "resources/js/pages/Landing/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_landing_index_svelte_landing_index",
-      "community": 58,
+      "community": 9,
       "norm_label": "index.svelte"
     },
     {
@@ -17162,7 +17189,7 @@
       "source_file": "resources/js/components/Landing",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_components_landing",
-      "community": 58,
+      "community": 9,
       "norm_label": "@/components/landing"
     },
     {
@@ -17216,7 +17243,7 @@
       "source_file": "resources/js/pages/Mahasiswa/Dashboard/Index.svelte",
       "source_location": "L1",
       "id": "resources_js_pages_mahasiswa_dashboard_index_svelte_dashboard_index",
-      "community": 6,
+      "community": 58,
       "norm_label": "index.svelte"
     },
     {
@@ -17225,7 +17252,7 @@
       "source_file": "resources/js/states/Mahasiswa/DashboardState.svelte",
       "confidence": "EXTRACTED",
       "id": "home_rey_projects_skripsi_oopedia_resources_js_states_mahasiswa_dashboardstate_svelte",
-      "community": 6,
+      "community": 58,
       "norm_label": "@/states/mahasiswa/dashboardstate.svelte"
     },
     {
@@ -17460,7 +17487,7 @@
       "source_file": "resources/js/states/Admin/AdaptiveRuleEditorState.svelte.ts",
       "source_location": "L1",
       "id": "admin_adaptiveruleeditorstate_svelte",
-      "community": 2,
+      "community": 15,
       "norm_label": "adaptiveruleeditorstate.svelte.ts"
     },
     {
@@ -18216,7 +18243,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L101",
       "id": "admin_studentstate_svelte_studentregisterstate",
-      "community": 46,
+      "community": 15,
       "norm_label": "studentregisterstate"
     },
     {
@@ -18225,7 +18252,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L107",
       "id": "admin_studentstate_svelte_studentregisterstate_constructor",
-      "community": 46,
+      "community": 15,
       "norm_label": ".constructor()"
     },
     {
@@ -18234,7 +18261,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L116",
       "id": "admin_studentstate_svelte_studentregisterstate_submit",
-      "community": 46,
+      "community": 15,
       "norm_label": ".submit()"
     },
     {
@@ -18243,7 +18270,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L129",
       "id": "admin_studentstate_svelte_studentimportstate",
-      "community": 46,
+      "community": 172,
       "norm_label": "studentimportstate"
     },
     {
@@ -18252,7 +18279,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L130",
       "id": "admin_studentstate_svelte_studentimportstate_constructor",
-      "community": 46,
+      "community": 172,
       "norm_label": ".constructor()"
     },
     {
@@ -18261,7 +18288,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L136",
       "id": "admin_studentstate_svelte_studentimportstate_submit",
-      "community": 46,
+      "community": 172,
       "norm_label": ".submit()"
     },
     {
@@ -18270,7 +18297,7 @@
       "source_file": "resources/js/states/Admin/StudentState.svelte.ts",
       "source_location": "L140",
       "id": "admin_studentstate_svelte_studentimportstate_handlefilechange",
-      "community": 46,
+      "community": 172,
       "norm_label": ".handlefilechange()"
     },
     {
@@ -18279,7 +18306,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L1",
       "id": "admin_susstate_svelte",
-      "community": 15,
+      "community": 23,
       "norm_label": "susstate.svelte.ts"
     },
     {
@@ -18288,7 +18315,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L10",
       "id": "admin_susstate_svelte_susliststate",
-      "community": 97,
+      "community": 23,
       "norm_label": "susliststate"
     },
     {
@@ -18297,7 +18324,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L22",
       "id": "admin_susstate_svelte_susliststate_constructor",
-      "community": 97,
+      "community": 23,
       "norm_label": ".constructor()"
     },
     {
@@ -18306,7 +18333,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L33",
       "id": "admin_susstate_svelte_susliststate_handlefilterchange",
-      "community": 97,
+      "community": 23,
       "norm_label": ".handlefilterchange()"
     },
     {
@@ -18315,7 +18342,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L37",
       "id": "admin_susstate_svelte_susliststate_exportresults",
-      "community": 97,
+      "community": 23,
       "norm_label": ".exportresults()"
     },
     {
@@ -18324,7 +18351,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L48",
       "id": "admin_susstate_svelte_susdetailstate",
-      "community": 97,
+      "community": 23,
       "norm_label": "susdetailstate"
     },
     {
@@ -18333,7 +18360,7 @@
       "source_file": "resources/js/states/Admin/SusState.svelte.ts",
       "source_location": "L58",
       "id": "admin_susstate_svelte_susdetailstate_constructor",
-      "community": 97,
+      "community": 23,
       "norm_label": ".constructor()"
     },
     {
@@ -18342,7 +18369,7 @@
       "source_file": "resources/js/states/Admin/UeqState.svelte.ts",
       "source_location": "L1",
       "id": "admin_ueqstate_svelte",
-      "community": 15,
+      "community": 23,
       "norm_label": "ueqstate.svelte.ts"
     },
     {
@@ -18504,7 +18531,7 @@
       "source_file": "resources/js/states/Admin/UserState.svelte.ts",
       "source_location": "L96",
       "id": "admin_userstate_svelte_userimportstate",
-      "community": 46,
+      "community": 174,
       "norm_label": "userimportstate"
     },
     {
@@ -18513,7 +18540,7 @@
       "source_file": "resources/js/states/Admin/UserState.svelte.ts",
       "source_location": "L97",
       "id": "admin_userstate_svelte_userimportstate_constructor",
-      "community": 46,
+      "community": 174,
       "norm_label": ".constructor()"
     },
     {
@@ -18522,7 +18549,7 @@
       "source_file": "resources/js/states/Admin/UserState.svelte.ts",
       "source_location": "L103",
       "id": "admin_userstate_svelte_userimportstate_submit",
-      "community": 46,
+      "community": 174,
       "norm_label": ".submit()"
     },
     {
@@ -18531,7 +18558,7 @@
       "source_file": "resources/js/states/Admin/UserState.svelte.ts",
       "source_location": "L107",
       "id": "admin_userstate_svelte_userimportstate_handlefilechange",
-      "community": 46,
+      "community": 174,
       "norm_label": ".handlefilechange()"
     },
     {
@@ -18801,7 +18828,7 @@
       "source_file": "resources/js/states/Error/ErrorState.svelte.ts",
       "source_location": "L1",
       "id": "error_errorstate_svelte",
-      "community": 15,
+      "community": 14,
       "norm_label": "errorstate.svelte.ts"
     },
     {
@@ -18855,7 +18882,7 @@
       "source_file": "resources/js/states/FormState.svelte.ts",
       "source_location": "L10",
       "id": "states_formstate_svelte_formstate",
-      "community": 46,
+      "community": 15,
       "norm_label": "formstate"
     },
     {
@@ -18873,7 +18900,7 @@
       "source_file": "resources/js/states/FormState.svelte.ts",
       "source_location": "L35",
       "id": "states_formstate_svelte_formstate_resetform",
-      "community": 46,
+      "community": 15,
       "norm_label": ".resetform()"
     },
     {
@@ -18891,7 +18918,7 @@
       "source_file": "resources/js/states/FormState.svelte.ts",
       "source_location": "L115",
       "id": "states_formstate_svelte_formstate_processing",
-      "community": 46,
+      "community": 15,
       "norm_label": ".processing()"
     },
     {
@@ -18900,7 +18927,7 @@
       "source_file": "resources/js/states/FormState.svelte.ts",
       "source_location": "L119",
       "id": "states_formstate_svelte_formstate_formerrors",
-      "community": 46,
+      "community": 15,
       "norm_label": ".formerrors()"
     },
     {
@@ -19089,7 +19116,7 @@
       "source_file": "resources/js/states/Mahasiswa/MslqSurveyState.svelte.ts",
       "source_location": "L1",
       "id": "mahasiswa_mslqsurveystate_svelte",
-      "community": 25,
+      "community": 15,
       "norm_label": "mslqsurveystate.svelte.ts"
     },
     {
@@ -19152,7 +19179,7 @@
       "source_file": "resources/js/states/Mahasiswa/ProfileState.svelte.ts",
       "source_location": "L5",
       "id": "mahasiswa_profilestate_svelte_profilestate",
-      "community": 155,
+      "community": 15,
       "norm_label": "profilestate"
     },
     {
@@ -19161,7 +19188,7 @@
       "source_file": "resources/js/states/Mahasiswa/ProfileState.svelte.ts",
       "source_location": "L9",
       "id": "mahasiswa_profilestate_svelte_profilestate_constructor",
-      "community": 155,
+      "community": 16,
       "norm_label": ".constructor()"
     },
     {
@@ -19170,7 +19197,7 @@
       "source_file": "resources/js/states/Mahasiswa/ProfileState.svelte.ts",
       "source_location": "L24",
       "id": "mahasiswa_profilestate_svelte_profilestate_submit",
-      "community": 155,
+      "community": 15,
       "norm_label": ".submit()"
     },
     {
@@ -19188,7 +19215,7 @@
       "source_file": "resources/js/states/Mahasiswa/QuizState.svelte.ts",
       "source_location": "L20",
       "id": "mahasiswa_quizstate_svelte_questionliststate",
-      "community": 16,
+      "community": 14,
       "norm_label": "questionliststate"
     },
     {
@@ -19197,7 +19224,7 @@
       "source_file": "resources/js/states/Mahasiswa/QuizState.svelte.ts",
       "source_location": "L23",
       "id": "mahasiswa_quizstate_svelte_questionliststate_constructor",
-      "community": 16,
+      "community": 14,
       "norm_label": ".constructor()"
     },
     {
@@ -19377,7 +19404,7 @@
       "source_file": "resources/js/states/Mahasiswa/SusSurveyState.svelte.ts",
       "source_location": "L5",
       "id": "mahasiswa_sussurveystate_svelte_sussurveystate",
-      "community": 46,
+      "community": 15,
       "norm_label": "sussurveystate"
     },
     {
@@ -19386,7 +19413,7 @@
       "source_file": "resources/js/states/Mahasiswa/SusSurveyState.svelte.ts",
       "source_location": "L8",
       "id": "mahasiswa_sussurveystate_svelte_sussurveystate_constructor",
-      "community": 46,
+      "community": 15,
       "norm_label": ".constructor()"
     },
     {
@@ -19395,7 +19422,7 @@
       "source_file": "resources/js/states/Mahasiswa/SusSurveyState.svelte.ts",
       "source_location": "L24",
       "id": "mahasiswa_sussurveystate_svelte_sussurveystate_submit",
-      "community": 46,
+      "community": 15,
       "norm_label": ".submit()"
     },
     {
@@ -19989,7 +20016,7 @@
       "source_file": "resources/js/types/core.ts",
       "source_location": "L23",
       "id": "types_core_approle",
-      "community": 155,
+      "community": 16,
       "norm_label": "approle"
     },
     {
@@ -20160,7 +20187,7 @@
       "source_file": "resources/js/types/models/User.ts",
       "source_location": "L1",
       "id": "resources_js_types_models_user_ts_models_user",
-      "community": 155,
+      "community": 16,
       "norm_label": "user.ts"
     },
     {
@@ -20169,7 +20196,7 @@
       "source_file": "resources/js/types/models/User.ts",
       "source_location": "L7",
       "id": "models_user_role",
-      "community": 155,
+      "community": 16,
       "norm_label": "role"
     },
     {
@@ -20178,7 +20205,7 @@
       "source_file": "resources/js/types/models/User.ts",
       "source_location": "L14",
       "id": "resources_js_types_models_user_ts_models_user_user",
-      "community": 155,
+      "community": 16,
       "norm_label": "user"
     },
     {
@@ -20187,7 +20214,7 @@
       "source_file": "resources/js/types/models/User.ts",
       "source_location": "L31",
       "id": "models_user_learningpersonalization",
-      "community": 155,
+      "community": 16,
       "norm_label": "learningpersonalization"
     },
     {
@@ -20196,7 +20223,7 @@
       "source_file": "resources/js/types/models/User.ts",
       "source_location": "L52",
       "id": "models_user_studentprofile",
-      "community": 155,
+      "community": 16,
       "norm_label": "studentprofile"
     },
     {
@@ -20205,7 +20232,7 @@
       "source_file": "resources/js/types/models/User.ts",
       "source_location": "L60",
       "id": "models_user_certification",
-      "community": 155,
+      "community": 16,
       "norm_label": "certification"
     },
     {
@@ -20556,7 +20583,7 @@
       "source_file": "resources/js/types/models/survey/Sus.ts",
       "source_location": "L14",
       "id": "survey_sus_susresult",
-      "community": 97,
+      "community": 23,
       "norm_label": "susresult"
     },
     {
@@ -22274,7 +22301,7 @@
       "file_type": "code",
       "source_file": "app/Repositories/AdaptiveFactRepository.php",
       "source_location": "L18",
-      "community": 42,
+      "community": 97,
       "norm_label": ".findbyids()",
       "id": "repositories_adaptivefactrepository_adaptivefactrepository_findbyids"
     },
@@ -22292,7 +22319,7 @@
       "file_type": "code",
       "source_file": "app/Http/Controllers/Admin/AdaptiveActionController.php",
       "source_location": "L21",
-      "community": 48,
+      "community": 86,
       "norm_label": "adaptiveaction",
       "id": "adaptiveaction"
     },
@@ -22553,7 +22580,7 @@
       "file_type": "code",
       "source_file": "app/Models/SusAnswer.php",
       "source_location": "L23",
-      "community": 52,
+      "community": 67,
       "norm_label": ".result()",
       "id": "models_susanswer_susanswer_result"
     },
@@ -22589,7 +22616,7 @@
       "file_type": "code",
       "source_file": "app/Services/Lms/MaterialService.php",
       "source_location": "L60",
-      "community": 1,
+      "community": 127,
       "norm_label": ".getmaterialwithquestionsandanswers()",
       "id": "lms_materialservice_materialservice_getmaterialwithquestionsandanswers"
     },
@@ -22904,7 +22931,7 @@
       "label": "LMS Entities",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 1,
+      "community": 147,
       "norm_label": "lms entities",
       "id": "LmsEntities"
     },
@@ -22913,7 +22940,7 @@
       "label": "Adaptive Engine Entities",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 63,
+      "community": 48,
       "norm_label": "adaptive engine entities",
       "id": "AdaptiveEngineEntities"
     },
@@ -22940,7 +22967,7 @@
       "label": "Role Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 136,
+      "community": 142,
       "norm_label": "role model",
       "id": "Role"
     },
@@ -22967,7 +22994,7 @@
       "label": "Question Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 5,
+      "community": 147,
       "norm_label": "question model",
       "id": "Question"
     },
@@ -22976,7 +23003,7 @@
       "label": "Answer Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 1,
+      "community": 147,
       "norm_label": "answer model",
       "id": "Answer"
     },
@@ -22985,7 +23012,7 @@
       "label": "QuizAttempt Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 1,
+      "community": 147,
       "norm_label": "quizattempt model",
       "id": "QuizAttempt"
     },
@@ -23003,7 +23030,7 @@
       "label": "AdaptiveRule Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 63,
+      "community": 48,
       "norm_label": "adaptiverule model",
       "id": "AdaptiveRule"
     },
@@ -23012,7 +23039,7 @@
       "label": "AdaptiveFact Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 63,
+      "community": 48,
       "norm_label": "adaptivefact model",
       "id": "AdaptiveFact"
     },
@@ -23021,7 +23048,7 @@
       "label": "AdaptiveAction Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 63,
+      "community": 48,
       "norm_label": "adaptiveaction model",
       "id": "AdaptiveAction"
     },
@@ -23030,7 +23057,7 @@
       "label": "AdaptiveExecutionLog Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 42,
+      "community": 149,
       "norm_label": "adaptiveexecutionlog model",
       "id": "AdaptiveExecutionLog"
     },
@@ -23039,7 +23066,7 @@
       "label": "MslqQuestion Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 106,
+      "community": 91,
       "norm_label": "mslqquestion model",
       "id": "MslqQuestion"
     },
@@ -23057,7 +23084,7 @@
       "label": "MslqResult Model",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Models/AGENTS.md",
       "file_type": "concept",
-      "community": 0,
+      "community": 211,
       "norm_label": "mslqresult model",
       "id": "MslqResult"
     },
@@ -23156,7 +23183,7 @@
       "label": "Adaptive Rules Engine",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "adaptive rules engine",
       "id": "AdaptiveRulesEngine"
     },
@@ -23165,7 +23192,7 @@
       "label": "Adaptive Constants",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "adaptive constants",
       "id": "AdaptiveConstants"
     },
@@ -23174,7 +23201,7 @@
       "label": "FactConstants",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "factconstants",
       "id": "FactConstants"
     },
@@ -23183,7 +23210,7 @@
       "label": "ActionConstants",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "actionconstants",
       "id": "ActionConstants"
     },
@@ -23192,7 +23219,7 @@
       "label": "PedagogicalConstants",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "pedagogicalconstants",
       "id": "PedagogicalConstants"
     },
@@ -23201,7 +23228,7 @@
       "label": "StudentStateSchema",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "studentstateschema",
       "id": "StudentStateSchema"
     },
@@ -23210,7 +23237,7 @@
       "label": "Fact Codes (G-Codes)",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "fact codes (g-codes)",
       "id": "FactCodes"
     },
@@ -23219,7 +23246,7 @@
       "label": "Action Codes (H-Codes)",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "action codes (h-codes)",
       "id": "ActionCodes"
     },
@@ -23228,7 +23255,7 @@
       "label": "Database-Driven Rules Pattern",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 63,
+      "community": 48,
       "norm_label": "database-driven rules pattern",
       "id": "DatabaseDrivenRules"
     },
@@ -23237,7 +23264,7 @@
       "label": "Forward-Chaining Rule Evaluation",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Rules/Adaptive/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "forward-chaining rule evaluation",
       "id": "ForwardChaining"
     },
@@ -23300,7 +23327,7 @@
       "label": "AdaptiveEngineService",
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Services/AGENTS.md",
       "file_type": "concept",
-      "community": 82,
+      "community": 18,
       "norm_label": "adaptiveengineservice",
       "id": "AdaptiveEngineService"
     },
@@ -48364,6 +48391,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "app/Rules/Adaptive/Constants/LeaderboardConstants.php",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "constants_leaderboardconstants",
+      "target": "constants_leaderboardconstants_leaderboardconstants",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "app/Rules/Adaptive/Constants/PedagogicalConstants.php",
       "source_location": "L7",
       "weight": 1.0,
@@ -50112,6 +50149,28 @@
       "confidence_score": 1.0,
       "source": "analytics_dashboardservice_dashboardservice_getdashboardindexdata",
       "target": "analytics_dashboardservice_dashboardservice_deduplicateactivities"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Services/Analytics/DashboardService.php",
+      "source_location": "L135",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "analytics_dashboardservice_dashboardservice_deduplicateactivities",
+      "target": "app_services_analytics_dashboardservice_php_supportcollection",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "app/Services/Analytics/DashboardService.php",
+      "source_location": "L256",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "analytics_dashboardservice_dashboardservice_processmaterialswithstats",
+      "target": "app_services_analytics_dashboardservice_php_supportcollection",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -71953,5 +72012,5 @@
       "source_location": "file:///home/rey/Projects/Skripsi/oopedia/app/Http/AGENTS.md"
     }
   ],
-  "built_at_commit": "0fea590e6c9233fbe1845a45ba59d3a4c5c80243"
+  "built_at_commit": "aa38ec20cb7432104f935024a37f5e5d1f81abef"
 }

@@ -1,11 +1,11 @@
 # Graph Report - oopedia  (2026-06-05)
 
 ## Corpus Check
-- 438 files · ~113,168 words
+- 438 files · ~113,135 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2616 nodes · 4733 edges · 208 communities (157 shown, 51 thin omitted)
+- 2616 nodes · 4733 edges · 209 communities (158 shown, 51 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 61 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
@@ -165,6 +165,7 @@
 - [[_COMMUNITY_Community 147|Community 147]]
 - [[_COMMUNITY_Community 148|Community 148]]
 - [[_COMMUNITY_Community 149|Community 149]]
+- [[_COMMUNITY_Community 150|Community 150]]
 - [[_COMMUNITY_Community 153|Community 153]]
 - [[_COMMUNITY_Community 154|Community 154]]
 - [[_COMMUNITY_Community 155|Community 155]]
@@ -239,7 +240,7 @@
 - **FrontendSPAStack: Core frontend technology stack** — Svelte5, InertiaJsV3, TailwindCssV4 [EXTRACTED]
 - **FullStackBridge: Backend and frontend bridged by Inertia.js** — BackendCore, FrontendResources, InertiaJsV3 [EXTRACTED]
 
-## Communities (208 total, 51 thin omitted)
+## Communities (209 total, 51 thin omitted)
 
 ### Community 0 - "MSLQ Survey"
 Cohesion: 0.06
@@ -267,7 +268,7 @@ Nodes (20): Question Model, AdaptiveActionProcessor, AdaptiveActionProcessorInte
 
 ### Community 6 - "Pages & UI Components"
 Cohesion: 0.15
-Nodes (23): @/components/Admin/StatisticalAnalysis.svelte, @/states/Admin/DashboardState.svelte, @/states/Admin/MslqState.svelte, @/states/Admin/StudentState.svelte, @/states/Admin/SusState.svelte, @/states/Admin/UeqState.svelte, @/states/Admin/UserState.svelte, @/states/Mahasiswa/DashboardState.svelte (+15 more)
+Nodes (22): @/components/Admin/StatisticalAnalysis.svelte, @/states/Admin/DashboardState.svelte, @/states/Admin/MslqState.svelte, @/states/Admin/StudentState.svelte, @/states/Admin/SusState.svelte, @/states/Admin/UeqState.svelte, @/states/Mahasiswa/DashboardState.svelte, @/states/Mahasiswa/LeaderboardState.svelte (+14 more)
 
 ### Community 7 - "Admin User Management"
 Cohesion: 0.09
@@ -295,19 +296,19 @@ Nodes (4): AdaptiveRuleRepositoryInterface, AdaptiveRule, Collection, AdaptiveRu
 
 ### Community 13 - "Community 13"
 Cohesion: 0.10
-Nodes (20): scaleLabels, strategyQuestions, safeUpdateItems, @/components/layout, @/components/navigation, @/states/Admin/AdminProfileState.svelte, @/states/Auth/AuthState.svelte, @/states/Mahasiswa/MslqSurveyState.svelte (+12 more)
+Nodes (21): scaleLabels, strategyQuestions, safeUpdateItems, @/components/layout, @/components/navigation, @/states/Admin/AdminProfileState.svelte, @/states/Admin/UserState.svelte, @/states/Auth/AuthState.svelte (+13 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.07
-Nodes (11): MaterialListState, PendingAdminState, PendingUsersState, MaterialWithStats, ErrorState, CompletedState, InProgressState, MaterialCatalogState (+3 more)
+Nodes (10): MaterialListState, PendingAdminState, PendingUsersState, MaterialWithStats, ErrorState, CompletedState, InProgressState, MaterialCatalogState (+2 more)
 
 ### Community 15 - "Community 15"
 Cohesion: 0.28
 Nodes (6): AnswerField, SUS_QUESTIONS, UEQ_ASPECTS, UEQ_DIMENSIONS, confirmDelete(), ROUTES
 
 ### Community 16 - "Community 16"
-Cohesion: 0.13
-Nodes (14): LevelMapState, ReviewState, Answer, LevelItem, QuestionWithAttempt, UserAttempt, Material, Question (+6 more)
+Cohesion: 0.12
+Nodes (15): LevelMapState, QuestionListState, ReviewState, Answer, LevelItem, QuestionWithAttempt, UserAttempt, Material (+7 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.10
@@ -342,8 +343,8 @@ Cohesion: 0.22
 Nodes (7): AdminStudentController, RedirectResponse, Request, Response, StreamedResponse, ImportStudentRequest, StoreStudentRequest
 
 ### Community 25 - "Community 25"
-Cohesion: 0.07
-Nodes (14): MslqDetailState, MslqState, QuestionListAdminState, StudentListState, UserListState, MslqSurveyState, AdminMslqDetailProps, AdminMslqIndexProps (+6 more)
+Cohesion: 0.11
+Nodes (11): QuestionListAdminState, StudentListState, UserListState, MslqSurveyState, AdminMslqDetailProps, AdminMslqIndexProps, MslqAnswer, MslqAnswerDetail (+3 more)
 
 ### Community 26 - "Community 26"
 Cohesion: 0.14
@@ -402,7 +403,7 @@ Cohesion: 0.17
 Nodes (13): Collection, LengthAwarePaginator, User, create(), find(), findByEmail(), findByGoogleId(), getStudentProgressOverview() (+5 more)
 
 ### Community 41 - "Community 41"
-Cohesion: 0.14
+Cohesion: 0.15
 Nodes (11): highlight.js/styles/atom-one-dark.css, @/states/Admin/MaterialState.svelte, columns, listState, materialStats, search, quill/dist/quill.snow.css, @/components/ui/ContentDisplay.svelte (+3 more)
 
 ### Community 42 - "Community 42"
@@ -410,7 +411,7 @@ Cohesion: 0.07
 Nodes (22): AdaptiveExecutionLog Model, AdaptiveEngineService, AdaptiveEngineServiceInterface, AdaptiveExecutionLogRepositoryInterface, AdaptiveFactRepositoryInterface, BelongsTo, AdaptiveExecutionLog, Collection (+14 more)
 
 ### Community 43 - "Community 43"
-Cohesion: 0.36
+Cohesion: 0.43
 Nodes (4): @/states/ui, @/states/ui/tutorialState.svelte, @/tutorial, @/utils/roles
 
 ### Community 44 - "Community 44"
@@ -426,7 +427,7 @@ Cohesion: 0.07
 Nodes (10): StudentImportState, StudentRegisterState, UserImportState, ForgotPasswordState, LoginState, RegisterState, ResetPasswordState, SusSurveyState (+2 more)
 
 ### Community 47 - "Community 47"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (6): @/states/Admin/QuestionState.svelte, columns, difficultyOptions, state, @/components/quiz/DragDropEditor.svelte, @/components/quiz/DragDropHandle.svelte
 
 ### Community 48 - "Community 48"
@@ -769,6 +770,10 @@ Nodes (4): Collection, Role, RoleRepository, RoleRepositoryInterface
 Cohesion: 0.16
 Nodes (9): Core Entities, StudentState Model, User Model, Request, Request, Request, StudentProgressResource, StudentStateResource (+1 more)
 
+### Community 150 - "Community 150"
+Cohesion: 0.22
+Nodes (3): MslqDetailState, MslqState, MslqResult
+
 ### Community 155 - "Community 155"
 Cohesion: 0.27
 Nodes (7): ProfileState, Certification, LearningPersonalization, Role, StudentProfile, User, AppRole
@@ -802,11 +807,11 @@ Nodes (8): MslqAnswer Model, Survey Entities, SusResult Model, UeqSurvey Model, 
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Controller` connect `Community 29` to `MSLQ Survey`, `Material & Media`, `Admin User Management`, `UEQ Survey`, `Community 24`, `Community 28`, `Community 36`, `Community 44`, `Community 48`, `Community 49`, `Community 61`, `Community 62`, `Community 80`, `Community 85`, `Community 90`, `Community 92`, `Community 93`, `Community 94`, `Community 96`, `Community 98`, `Community 102`, `Community 108`, `Community 127`?**
-  _High betweenness centrality (0.090) - this node is a cross-community bridge._
+  _High betweenness centrality (0.087) - this node is a cross-community bridge._
 - **Why does `BaseFormRequest` connect `Community 54` to `Community 160`, `Community 161`, `Community 162`, `Community 163`, `Community 134`, `Community 168`, `Community 169`, `Community 170`, `Community 106`, `Community 172`, `Community 178`, `Community 179`, `Community 213`, `Community 181`, `Community 182`, `Community 156`, `Community 157`, `Community 158`?**
-  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+  _High betweenness centrality (0.049) - this node is a cross-community bridge._
 - **Why does `RoleName` connect `Community 35` to `Community 129`, `Material & Media`, `Student Progress & Performance`, `Community 131`, `Quiz & Adaptive Execution`, `Community 37`, `Admin User Management`, `Community 38`, `Community 42`, `Community 18`, `Community 53`, `Community 30`, `Community 122`, `Community 123`, `Community 29`, `Community 94`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **What connects `self`, `self`, `self` to the rest of the system?**
   _148 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `MSLQ Survey` be split into smaller, more focused modules?**
