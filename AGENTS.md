@@ -47,6 +47,9 @@ Stack: Laravel 12 + Inertia v3 + Svelte 5 + Tailwind v4 + MySQL.
 - Adaptive rules (R01-R15) and facts (G-Codes) documented in `rules.md`.
 
 <!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+### AI Agent Shell Execution Rule
+- Shell commands: Use `run_command("rtk <command>")`. DO NOT use `ctx_shell` (double compression, no value).
+- File operations: Use `ctx_read`, `ctx_search`, etc. as defined in lean-ctx rules.
 ===
 
 <laravel-boost-guidelines>
