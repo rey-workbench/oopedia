@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('mslq_results', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->constrained()->onDelete('cascade');
+            $table->string('assessment_type')->default('post');
             $table->string('nim')->nullable();
             $table->string('class')->nullable();
             $table->json('scores_by_scale'); // { "intrinsic_goal_orientation": 5.4, ... }
