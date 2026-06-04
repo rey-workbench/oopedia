@@ -1,18 +1,13 @@
-# Graph Report - oopedia  (2026-06-05)
+# Graph Report - .  (2026-06-05)
 
 ## Corpus Check
 - 427 files · ~112,754 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2451 nodes · 4411 edges · 215 communities (150 shown, 65 thin omitted)
+- 2341 nodes · 4314 edges · 206 communities (140 shown, 66 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 59 edges (avg confidence: 0.77)
-- Token cost: 0 input · 0 output
-
-## Graph Freshness
-- Built from commit: `6ae30295`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
+- Token cost: 4,862 input · 0 output
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_MSLQ Survey|MSLQ Survey]]
@@ -203,15 +198,6 @@
 - [[_COMMUNITY_Community 190|Community 190]]
 - [[_COMMUNITY_Community 193|Community 193]]
 - [[_COMMUNITY_Community 201|Community 201]]
-- [[_COMMUNITY_Community 206|Community 206]]
-- [[_COMMUNITY_Community 207|Community 207]]
-- [[_COMMUNITY_Community 208|Community 208]]
-- [[_COMMUNITY_Community 209|Community 209]]
-- [[_COMMUNITY_Community 210|Community 210]]
-- [[_COMMUNITY_Community 211|Community 211]]
-- [[_COMMUNITY_Community 212|Community 212]]
-- [[_COMMUNITY_Community 213|Community 213]]
-- [[_COMMUNITY_Community 214|Community 214]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Controller` - 62 edges
@@ -247,31 +233,31 @@
 - **FrontendSPAStack: Core frontend technology stack** — Svelte5, InertiaJsV3, TailwindCssV4 [EXTRACTED]
 - **FullStackBridge: Backend and frontend bridged by Inertia.js** — BackendCore, FrontendResources, InertiaJsV3 [EXTRACTED]
 
-## Communities (215 total, 65 thin omitted)
+## Communities (206 total, 66 thin omitted)
 
 ### Community 0 - "MSLQ Survey"
-Cohesion: 0.07
-Nodes (22): MslqAnswer Model, MslqQuestion Model, MslqResult Model, Survey Entities, SusResult Model, MslqService, RedirectResponse, Request (+14 more)
+Cohesion: 0.05
+Nodes (28): MslqAnswer Model, MslqQuestion Model, MslqResult Model, Survey Entities, SusResult Model, MslqController, MslqService, SusResultService (+20 more)
 
 ### Community 1 - "Material & Media"
-Cohesion: 0.07
-Nodes (19): Answer Model, LMS Entities, Material Model, Media Model, MediaController, JsonResponse, Request, Request (+11 more)
+Cohesion: 0.05
+Nodes (22): Answer Model, LMS Entities, Material Model, Media Model, QuizAttempt Model, MediaController, AdminDashboardService, JsonResponse (+14 more)
 
 ### Community 2 - "Adaptive Engine & Rules"
 Cohesion: 0.06
 Nodes (27): AdaptiveDecisionTree, AdaptiveRuleDiagnosis, AdaptiveRuleTriggerStat, AdaptiveStateDistribution, AdaptiveTriggerItem, DecisionTreeEdge, DecisionTreeNode, AdaptiveAction (+19 more)
 
 ### Community 3 - "Student Progress & Performance"
-Cohesion: 0.06
-Nodes (23): Action Codes (H-Codes), ActionConstants, Adaptive Constants, Fact Codes (G-Codes), FactConstants, PedagogicalConstants, Request, Collection (+15 more)
+Cohesion: 0.07
+Nodes (22): Action Codes (H-Codes), ActionConstants, Adaptive Constants, Adaptive Rules Engine, Fact Codes (G-Codes), FactConstants, PedagogicalConstants, StudentStateSchema (+14 more)
 
 ### Community 4 - "Frontend Utils & Admin Forms"
-Cohesion: 0.07
-Nodes (37): AudioPlayer, playSound(), SOUND_PATHS, SoundType, activateExamProtection(), deactivateExamProtection(), defaultOptions, ExamProtectionOptions (+29 more)
+Cohesion: 0.06
+Nodes (39): MaterialFormState, AudioPlayer, playSound(), SOUND_PATHS, SoundType, activateExamProtection(), deactivateExamProtection(), defaultOptions (+31 more)
 
 ### Community 5 - "Quiz & Adaptive Execution"
-Cohesion: 0.05
-Nodes (28): AdaptiveExecutionLog Model, AdaptiveActionProcessor, AdaptiveActionProcessorInterface, AdaptiveExecutionLogRepositoryInterface, BelongsTo, Collection, Collection, LengthAwarePaginator (+20 more)
+Cohesion: 0.07
+Nodes (24): AdaptiveExecutionLog Model, AdaptiveExecutionLogRepositoryInterface, AnswerRepositoryInterface, BelongsTo, Collection, Answer, Collection, Collection (+16 more)
 
 ### Community 6 - "Pages & UI Components"
 Cohesion: 0.14
@@ -282,12 +268,12 @@ Cohesion: 0.07
 Nodes (17): AdminUserController, Request, self, Request, self, RedirectResponse, Request, Response (+9 more)
 
 ### Community 8 - "UEQ Survey"
-Cohesion: 0.16
-Nodes (8): Request, self, RedirectResponse, Request, Response, UeqSurveyController, StoreUeqSurveyRequest, UeqSurveyCreateDTO
+Cohesion: 0.07
+Nodes (17): UeqSurveyService, Request, self, RedirectResponse, Request, Response, Collection, UeqSurvey (+9 more)
 
 ### Community 9 - "Rich UI Components & Editor"
-Cohesion: 0.07
-Nodes (28): @lottiefiles/dotlottie-svelte, svelte/easing, @/components, @/components/feedback, ./types, @/components/Landing, @/states/Mahasiswa/QuizState.svelte, @/states/ui/xpAnimation.svelte (+20 more)
+Cohesion: 0.08
+Nodes (22): highlight.js/styles/atom-one-dark.css, scaleLabels, strategyQuestions, @/components/Landing, @/states/Admin/MaterialState.svelte, @/states/Mahasiswa/MslqSurveyState.svelte, @/utils/ids, quill/dist/quill.snow.css (+14 more)
 
 ### Community 10 - "App Bootstrap & Tutorial"
 Cohesion: 0.09
@@ -298,8 +284,8 @@ Cohesion: 0.08
 Nodes (23): @/pages/Admin/AdaptiveRules/Partials/render, @/pages/Admin/AdaptiveRules/Partials/topology, @/states/Admin/AdaptiveRuleState.svelte, actionData, factData, handleNodeClick(), handleNodeContextMenu(), highlightFlow() (+15 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.27
-Nodes (4): DashboardService, Collection, DashboardServiceInterface, MaterialRepositoryInterface
+Cohesion: 0.09
+Nodes (10): DashboardService, LeaderboardService, Collection, Response, Collection, Collection, DashboardServiceInterface, ProgressHelper (+2 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.12
@@ -310,12 +296,12 @@ Cohesion: 0.07
 Nodes (10): MaterialListState, PendingAdminState, PendingUsersState, MaterialWithStats, ErrorState, CompletedState, InProgressState, MaterialCatalogState (+2 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.23
+Cohesion: 0.21
 Nodes (6): AnswerField, StudentRegisterState, SusSurveyState, FormState, confirmDelete(), ROUTES
 
 ### Community 16 - "Community 16"
-Cohesion: 0.12
-Nodes (15): LevelMapState, QuestionListState, ReviewState, Answer, LevelItem, QuestionWithAttempt, UserAttempt, Material (+7 more)
+Cohesion: 0.10
+Nodes (20): LevelMapState, QuestionListState, ReviewState, Answer, LevelItem, QuestionWithAttempt, UserAttempt, Certification (+12 more)
 
 ### Community 17 - "Community 17"
 Cohesion: 0.10
@@ -326,8 +312,8 @@ Cohesion: 0.12
 Nodes (8): RedirectResponse, Request, Response, StudentState, LoginController, GuestProgressServiceInterface, GuestProgressService, LoginRequest
 
 ### Community 19 - "Community 19"
-Cohesion: 0.40
-Nodes (5): cubicBezier(), mapDots, totalH, trailDots(), tX
+Cohesion: 0.10
+Nodes (22): @lottiefiles/dotlottie-svelte, svelte/easing, @/components, @/components/feedback, ./types, @/states/Mahasiswa/QuizState.svelte, @/states/ui/xpAnimation.svelte, @/utils (+14 more)
 
 ### Community 20 - "Community 20"
 Cohesion: 0.11
@@ -342,12 +328,12 @@ Cohesion: 0.10
 Nodes (11): Request, Response, DomainException, MaterialNotFoundException, MediaOperationException, QuestionNotFoundException, UserNotFoundException, Exceptions (+3 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.08
-Nodes (15): SusDetailState, SusListState, UeqDetailState, UeqListState, SUS_QUESTIONS, UEQ_ASPECTS, UEQ_DIMENSIONS, UeqSurveyState (+7 more)
+Cohesion: 0.11
+Nodes (12): UeqDetailState, UeqListState, SUS_QUESTIONS, UEQ_ASPECTS, UEQ_DIMENSIONS, UeqSurveyState, AdminUeqDetailProps, AdminUeqIndexProps (+4 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.47
-Nodes (3): Question Model, Request, QuestionResource
+Cohesion: 0.20
+Nodes (6): Question Model, AdaptiveActionProcessor, AdaptiveActionProcessorInterface, Request, StudentState, QuestionResource
 
 ### Community 25 - "Community 25"
 Cohesion: 0.10
@@ -362,16 +348,16 @@ Cohesion: 0.17
 Nodes (18): Collection, QuizAttempt, StudentState, getAnsweredQuestionIds(), getAttemptedQuestionIds(), getCorrectAnswersWithAttempts(), getDetailedUserProgress(), getLatestAttemptsForQuestions() (+10 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.07
-Nodes (17): ProfileController, Request, self, RedirectResponse, Response, UpdateProfileRequest, MslqResult, RedirectResponse (+9 more)
+Cohesion: 0.15
+Nodes (5): LengthAwarePaginator, UploadedFile, User, ImportsCsvUsers, UserService
 
 ### Community 29 - "Community 29"
-Cohesion: 0.17
-Nodes (9): DashboardController, Response, JsonResponse, Response, AuthorizesRequests, BaseController, Controller, DispatchesJobs (+1 more)
+Cohesion: 0.16
+Nodes (10): DashboardController, AdminDashboardServiceInterface, Response, JsonResponse, Response, AuthorizesRequests, BaseController, Controller (+2 more)
 
 ### Community 30 - "Community 30"
-Cohesion: 0.26
-Nodes (3): Collection, Material, MaterialRepository
+Cohesion: 0.24
+Nodes (4): Collection, Material, MaterialRepositoryInterface, MaterialRepository
 
 ### Community 31 - "Community 31"
 Cohesion: 0.16
@@ -390,16 +376,16 @@ Cohesion: 0.21
 Nodes (8): BelongsTo, HasMany, User, Authenticatable, HasApiTokens, HasOne, Notifiable, RoleName
 
 ### Community 36 - "Community 36"
-Cohesion: 0.24
-Nodes (5): Collection, LengthAwarePaginator, User, UserRepository, UserRepositoryInterface
+Cohesion: 0.25
+Nodes (4): Collection, LengthAwarePaginator, User, UserRepository
 
 ### Community 37 - "Community 37"
 Cohesion: 0.18
-Nodes (6): LengthAwarePaginator, UploadedFile, User, ImportsCsvUsers, StudentServiceInterface, StudentService
+Nodes (5): LengthAwarePaginator, UploadedFile, User, StudentServiceInterface, StudentService
 
 ### Community 38 - "Community 38"
-Cohesion: 0.07
-Nodes (18): Role Model, AdminStudentController, Request, self, Request, self, RedirectResponse, Request (+10 more)
+Cohesion: 0.22
+Nodes (7): AdminStudentController, RedirectResponse, Request, Response, StreamedResponse, ImportStudentRequest, StoreStudentRequest
 
 ### Community 39 - "Community 39"
 Cohesion: 0.22
@@ -410,31 +396,31 @@ Cohesion: 0.19
 Nodes (10): Collection, LengthAwarePaginator, User, create(), find(), getStudentProgressOverview(), getStudentsList(), getStudentsWithRole() (+2 more)
 
 ### Community 41 - "Community 41"
-Cohesion: 0.16
-Nodes (11): highlight.js/styles/atom-one-dark.css, scaleLabels, strategyQuestions, @/states/Admin/MaterialState.svelte, @/states/Mahasiswa/MslqSurveyState.svelte, quill/dist/quill.snow.css, @/components/ui/Alert.svelte, @/components/ui/ContentDisplay.svelte (+3 more)
+Cohesion: 0.23
+Nodes (6): Collection, LengthAwarePaginator, Question, QuestionDifficulty, QuestionRepositoryInterface, QuestionRepository
 
 ### Community 42 - "Community 42"
 Cohesion: 0.27
 Nodes (6): AdaptiveEngineService, AdaptiveEngineServiceInterface, EngineResultDTO, StudentStateDTO, EvaluatesAdaptiveConditions, Exception
 
 ### Community 43 - "Community 43"
-Cohesion: 0.43
-Nodes (4): @/states/ui, @/states/ui/tutorialState.svelte, @/tutorial, @/utils/roles
+Cohesion: 0.22
+Nodes (8): CheckAnswerResponse, CertificateDetails, FeedbackState, FeedbackVariant, @/states/ui, @/states/ui/tutorialState.svelte, @/tutorial, @/utils/roles
 
 ### Community 44 - "Community 44"
 Cohesion: 0.24
 Nodes (6): MaterialController, RedirectResponse, Request, Response, StoreMaterialRequest, UpdateMaterialRequest
 
 ### Community 45 - "Community 45"
-Cohesion: 0.20
-Nodes (9): Backend Core (app/), Common Patterns (ANTI-PATTERNS), Dependencies, For AI Agents, Internal, Key Files, Purpose, Subdirectories (+1 more)
+Cohesion: 0.17
+Nodes (7): ProfileController, Request, self, RedirectResponse, Response, UpdateProfileRequest, ProfileUpdateDTO
 
 ### Community 46 - "Community 46"
 Cohesion: 0.13
 Nodes (5): ForgotPasswordState, LoginState, RegisterState, ResetPasswordState, FormStateOptions
 
 ### Community 47 - "Community 47"
-Cohesion: 0.15
+Cohesion: 0.16
 Nodes (6): @/states/Admin/QuestionState.svelte, columns, difficultyOptions, state, @/components/quiz/DragDropEditor.svelte, @/components/quiz/DragDropHandle.svelte
 
 ### Community 48 - "Community 48"
@@ -458,24 +444,24 @@ Cohesion: 0.21
 Nodes (6): BelongsTo, BelongsTo, HasUlids, Answer, SusAnswer, SusQuestion
 
 ### Community 53 - "Community 53"
-Cohesion: 0.16
-Nodes (6): AppServiceProvider, AuthServiceProvider, BroadcastServiceProvider, EventServiceProvider, RepositoryServiceProvider, ServiceProvider
+Cohesion: 0.19
+Nodes (5): AppServiceProvider, AuthServiceProvider, BroadcastServiceProvider, EventServiceProvider, ServiceProvider
 
 ### Community 54 - "Community 54"
 Cohesion: 0.21
-Nodes (5): ForgotPasswordRequest, LoginRequest, FormRequest, UpdateQuestionRequest, BaseFormRequest
+Nodes (5): StoreAdaptiveActionRequest, ForgotPasswordRequest, FormRequest, BaseFormRequest, StoreStudentRequest
 
 ### Community 55 - "Community 55"
 Cohesion: 0.23
 Nodes (6): BelongsTo, BelongsTo, HasFactory, MslqAnswer, MslqQuestion, UeqSurvey
 
 ### Community 56 - "Community 56"
-Cohesion: 0.29
-Nodes (6): AdminDashboardService, Analytics Services Subdirectory, DashboardService, UserService, User Services Subdirectory, ServiceServiceProvider
+Cohesion: 0.18
+Nodes (10): AdaptiveEngineService, Adaptive Services Subdirectory, AdminDashboardService, Analytics Services Subdirectory, DashboardService, Forward-Chaining Rule Evaluation, NextActionResolverService, UserService (+2 more)
 
 ### Community 57 - "Community 57"
-Cohesion: 0.16
-Nodes (19): AppServiceProvider, Backend Core (app/), Casts Method Pattern, Contracts (app/Contracts/), Eloquent Models (app/Models/), Exception Handler, Interface-First Design Philosophy, LMS Services Subdirectory (+11 more)
+Cohesion: 0.26
+Nodes (12): AppServiceProvider, Backend Core (app/), Casts Method Pattern, Contracts (app/Contracts/), Eloquent Models (app/Models/), Exception Handler, Interface-First Design Philosophy, Repository Interface Pattern (+4 more)
 
 ### Community 58 - "Community 58"
 Cohesion: 0.27
@@ -494,11 +480,11 @@ Cohesion: 0.32
 Nodes (5): Material, RedirectResponse, Response, MaterialQuestionController, ReviewQuestionRequest
 
 ### Community 62 - "Community 62"
-Cohesion: 0.16
-Nodes (9): Request, self, Collection, RedirectResponse, Request, Response, SusSurveyController, StoreSusResultRequest (+1 more)
+Cohesion: 0.29
+Nodes (6): Collection, RedirectResponse, Request, Response, SusSurveyController, StoreSusResultRequest
 
 ### Community 63 - "Community 63"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (3): AdaptiveAnalyticsService, AdaptiveAnalyticsServiceInterface, SupportCollection
 
 ### Community 64 - "Community 64"
@@ -522,8 +508,8 @@ Cohesion: 0.27
 Nodes (6): Content, Envelope, AdminApproved, Mailable, Queueable, SerializesModels
 
 ### Community 70 - "Community 70"
-Cohesion: 0.20
-Nodes (9): Common Patterns (ANTI-PATTERNS), Dependencies, For AI Agents, Frontend Components (resources/js/components/), Internal, Key Files, Purpose, Subdirectories (+1 more)
+Cohesion: 0.22
+Nodes (8): LMS Services Subdirectory, MaterialRepository, MaterialService, ProgressRepository, QuestionRepository, QuestionService, UserRepository, RepositoryServiceProvider
 
 ### Community 71 - "Community 71"
 Cohesion: 0.36
@@ -546,16 +532,16 @@ Cohesion: 0.31
 Nodes (7): InteractionDTO, PerformanceScoreDTO, StudentState, calculateScore(), findOrCreateStudentState(), syncMaterialContext(), updateMetricsFromInteraction()
 
 ### Community 76 - "Community 76"
-Cohesion: 0.20
-Nodes (9): Common Patterns (ANTI-PATTERNS), Dependencies, External, For AI Agents, Frontend Javascript (resources/js/), Key Files, Purpose, Subdirectories (+1 more)
+Cohesion: 0.33
+Nodes (5): MslqResult, RedirectResponse, Response, UpdateProfileRequest, ProfileController
 
 ### Community 77 - "Community 77"
 Cohesion: 0.24
 Nodes (3): HasMany, Builder, AdaptiveRule
 
 ### Community 78 - "Community 78"
-Cohesion: 0.20
-Nodes (9): Common Patterns (ANTI-PATTERNS), Dependencies, For AI Agents, Internal, Key Files, Purpose, Services Layer (app/Services/), Subdirectories (+1 more)
+Cohesion: 0.36
+Nodes (5): Collection, LengthAwarePaginator, MslqResult, MslqRepositoryInterface, MslqRepository
 
 ### Community 79 - "Community 79"
 Cohesion: 0.36
@@ -582,8 +568,12 @@ Cohesion: 0.33
 Nodes (6): SupportCollection, getMaterialStatistics(), getPopularMaterials(), getRecentProgress(), getStudentProgressOverview(), getStudentsNeedingAttention()
 
 ### Community 85 - "Community 85"
+Cohesion: 0.39
+Nodes (5): Material, Question, RedirectResponse, CheckAnswerRequest, QuizInteractionController
+
+### Community 86 - "Community 86"
 Cohesion: 0.33
-Nodes (6): Material, Question, RedirectResponse, CheckAnswerRequest, QuizInteractionController, QuizServiceInterface
+Nodes (5): Request, Request, JsonResource, AdaptiveActionResource, SusResultResource
 
 ### Community 87 - "Community 87"
 Cohesion: 0.33
@@ -594,8 +584,8 @@ Cohesion: 0.47
 Nodes (7): @/states/Admin/AdaptiveRuleEditorState.svelte, @/components/rulebase/LibraryDrawer.svelte, @/components/rulebase/RuleActionSection.svelte, @/components/rulebase/RuleConditionSection.svelte, @/components/rulebase/RuleDeductionSection.svelte, @/components/rulebase/RuleFeedbackSection.svelte, @/components/rulebase/RuleMetadataCard.svelte
 
 ### Community 89 - "Community 89"
-Cohesion: 0.20
-Nodes (9): Common Patterns (ANTI-PATTERNS), Dependencies, For AI Agents, Frontend State Management (resources/js/states/), Internal, Key Files, Purpose, Subdirectories (+1 more)
+Cohesion: 0.29
+Nodes (4): Role Model, Request, self, StudentCreateDTO
 
 ### Community 90 - "Community 90"
 Cohesion: 0.39
@@ -607,7 +597,7 @@ Nodes (7): Collection, LengthAwarePaginator, MslqResult, create(), findWithRelat
 
 ### Community 92 - "Community 92"
 Cohesion: 0.36
-Nodes (4): MslqController, Request, Response, StreamedResponse
+Nodes (4): RedirectResponse, Response, RegisterController, RegisterRequest
 
 ### Community 93 - "Community 93"
 Cohesion: 0.39
@@ -618,16 +608,20 @@ Cohesion: 0.43
 Nodes (3): RedirectResponse, Response, SocialController
 
 ### Community 95 - "Community 95"
-Cohesion: 0.21
-Nodes (5): Response, Request, CertificateController, CertificateResource, View
+Cohesion: 0.32
+Nodes (3): Response, CertificateController, View
 
 ### Community 96 - "Community 96"
-Cohesion: 0.31
-Nodes (4): RedirectResponse, Response, MaterialController, MaterialServiceInterface
+Cohesion: 0.36
+Nodes (3): RedirectResponse, Response, MaterialController
+
+### Community 97 - "Community 97"
+Cohesion: 0.32
+Nodes (5): Request, MaterialServiceInterface, Middleware, HandleInertiaRequests, UserServiceInterface
 
 ### Community 98 - "Community 98"
-Cohesion: 0.07
-Nodes (18): UeqSurvey Model, SusResultService, UeqSurveyService, Request, Collection, SusResult, AssessmentType, SupportCollection (+10 more)
+Cohesion: 0.43
+Nodes (4): Collection, SusResult, SusResultRepository, SusResultRepositoryInterface
 
 ### Community 99 - "Community 99"
 Cohesion: 0.33
@@ -638,8 +632,8 @@ Cohesion: 0.33
 Nodes (3): AdaptiveRuleDTO, Request, self
 
 ### Community 102 - "Community 102"
-Cohesion: 0.39
-Nodes (3): LeaderboardService, Collection, LeaderboardServiceInterface
+Cohesion: 0.29
+Nodes (3): SusDetailState, SusListState, SusResult
 
 ### Community 104 - "Community 104"
 Cohesion: 0.48
@@ -650,12 +644,12 @@ Cohesion: 0.38
 Nodes (3): Request, self, QuestionCreateDTO
 
 ### Community 106 - "Community 106"
-Cohesion: 0.39
-Nodes (4): Collection, UeqSurvey, UeqSurveyRepository, UeqSurveyRepositoryInterface
+Cohesion: 0.33
+Nodes (3): Request, self, SusResultCreateDTO
 
 ### Community 107 - "Community 107"
-Cohesion: 0.22
-Nodes (8): Common Patterns, Dependencies, For AI Agents, HTTP Layer (app/Http/), Internal, Purpose, Subdirectories, Working In This Directory
+Cohesion: 0.33
+Nodes (3): Request, self, UserRegistrationDTO
 
 ### Community 108 - "Community 108"
 Cohesion: 0.43
@@ -670,7 +664,7 @@ Cohesion: 0.38
 Nodes (3): BelongsTo, HasMany, SusResult
 
 ### Community 112 - "Community 112"
-Cohesion: 0.60
+Cohesion: 0.53
 Nodes (5): AdaptiveAction Model, Adaptive Engine Entities, AdaptiveFact Model, AdaptiveRule Model, Database-Driven Rules Pattern
 
 ### Community 115 - "Community 115"
@@ -710,24 +704,16 @@ Cohesion: 0.53
 Nodes (4): Closure, Request, Response, SecurityHeaders
 
 ### Community 127 - "Community 127"
-Cohesion: 0.26
-Nodes (3): AdminDashboardServiceInterface, AdminDashboardService, SupportCollection
+Cohesion: 0.40
+Nodes (4): Core Entities, StudentState Model, User Model, UserRepositoryInterface
 
 ### Community 128 - "Community 128"
-Cohesion: 0.22
-Nodes (8): Common Patterns (ANTI-PATTERNS), Dependencies, Eloquent Models (app/Models/), For AI Agents, Internal, Key Files, Purpose, Working In This Directory
-
-### Community 129 - "Community 129"
-Cohesion: 0.29
-Nodes (5): Request, Request, JsonResource, ActivityResource, AdaptiveRuleResource
+Cohesion: 0.50
+Nodes (3): UeqSurvey Model, Request, UeqSurveyResource
 
 ### Community 132 - "Community 132"
 Cohesion: 0.40
 Nodes (4): columns, listState, materialStats, search
-
-### Community 133 - "Community 133"
-Cohesion: 0.22
-Nodes (8): Common Patterns (ANTI-PATTERNS), Dependencies, For AI Agents, Inertia Pages (resources/js/pages/), Internal, Purpose, Subdirectories, Working In This Directory
 
 ### Community 138 - "Community 138"
 Cohesion: 0.83
@@ -737,65 +723,25 @@ Nodes (3): StudentState, findOrCreate(), update()
 Cohesion: 0.83
 Nodes (3): EngineResultDTO, StudentStateDTO, evaluate()
 
-### Community 140 - "Community 140"
-Cohesion: 0.22
-Nodes (8): Common Patterns (ANTI-PATTERNS), Dependencies, For AI Agents, Internal, Key Files, Purpose, Repository Layer (app/Repositories/), Working In This Directory
-
-### Community 143 - "Community 143"
-Cohesion: 0.22
-Nodes (8): Common Patterns, Dependencies, For AI Agents, Frontend Resources (resources/), Internal, Purpose, Subdirectories, Working In This Directory
-
-### Community 147 - "Community 147"
-Cohesion: 0.50
-Nodes (3): QuizAttempt Model, Request, RecentProgressResource
-
-### Community 148 - "Community 148"
-Cohesion: 0.22
-Nodes (7): Core Entities, StudentState Model, User Model, Request, Request, StudentProgressResource, StudentStateResource
-
-### Community 155 - "Community 155"
-Cohesion: 0.27
-Nodes (7): ProfileState, Certification, LearningPersonalization, Role, StudentProfile, User, AppRole
-
-### Community 167 - "Community 167"
-Cohesion: 0.43
-Nodes (4): AnswerRepositoryInterface, Answer, Collection, AnswerRepository
-
-### Community 206 - "Community 206"
-Cohesion: 0.33
-Nodes (6): AdaptiveEngineService, Adaptive Rules Engine, Adaptive Services Subdirectory, Forward-Chaining Rule Evaluation, NextActionResolverService, StudentStateSchema
-
-### Community 207 - "Community 207"
-Cohesion: 0.33
-Nodes (5): ADAPTIVE RULES ENGINE, ANTI-PATTERNS, CONVENTIONS, OVERVIEW, WHERE TO LOOK
-
-### Community 208 - "Community 208"
-Cohesion: 0.60
-Nodes (4): CheckAnswerResponse, CertificateDetails, FeedbackState, FeedbackVariant
-
-### Community 209 - "Community 209"
-Cohesion: 0.33
-Nodes (5): ANTI-PATTERNS, CONVENTIONS, HTTP CONTROLLERS, OVERVIEW, STRUCTURE
-
 ## Knowledge Gaps
-- **146 isolated node(s):** `self`, `self`, `self`, `self`, `self` (+141 more)
+- **82 isolated node(s):** `self`, `self`, `self`, `self`, `self` (+77 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **65 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **66 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Controller` connect `Community 29` to `MSLQ Survey`, `Material & Media`, `Admin User Management`, `UEQ Survey`, `Community 18`, `Community 28`, `Community 38`, `Community 44`, `Community 174`, `Community 48`, `Community 49`, `Community 61`, `Community 62`, `Community 71`, `Community 81`, `Community 82`, `Community 85`, `Community 92`, `Community 93`, `Community 94`, `Community 95`, `Community 96`, `Community 108`?**
-  _High betweenness centrality (0.086) - this node is a cross-community bridge._
+- **Why does `Controller` connect `Community 29` to `MSLQ Survey`, `Material & Media`, `Admin User Management`, `UEQ Survey`, `Community 12`, `Community 18`, `Community 38`, `Community 44`, `Community 45`, `Community 48`, `Community 49`, `Community 61`, `Community 62`, `Community 71`, `Community 76`, `Community 81`, `Community 82`, `Community 85`, `Community 92`, `Community 93`, `Community 94`, `Community 95`, `Community 96`, `Community 108`?**
+  _High betweenness centrality (0.098) - this node is a cross-community bridge._
 - **Why does `RoleName` connect `Community 35` to `Material & Media`, `Community 131`, `Student Progress & Performance`, `Quiz & Adaptive Execution`, `Community 37`, `Admin User Management`, `Community 18`, `Community 53`, `Community 24`, `Community 122`, `Community 123`, `Community 28`, `Community 29`, `Community 94`?**
-  _High betweenness centrality (0.040) - this node is a cross-community bridge._
-- **Why does `BaseFormRequest` connect `Community 54` to `MSLQ Survey`, `Community 134`, `Community 156`, `Community 157`, `Community 158`, `Community 160`, `Community 161`, `Community 162`, `Community 163`, `Community 168`, `Community 169`, `Community 170`, `Community 171`, `Community 172`, `Community 173`, `Community 178`, `Community 179`, `Community 181`, `Community 182`, `Community 212`, `Community 213`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
+- **Why does `BaseFormRequest` connect `Community 54` to `Community 133`, `Community 134`, `Community 156`, `Community 157`, `Community 158`, `Community 160`, `Community 161`, `Community 162`, `Community 163`, `Community 167`, `Community 168`, `Community 169`, `Community 170`, `Community 171`, `Community 172`, `Community 173`, `Community 174`, `Community 178`, `Community 179`, `Community 181`, `Community 182`?**
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **What connects `self`, `self`, `self` to the rest of the system?**
-  _146 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _82 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `MSLQ Survey` be split into smaller, more focused modules?**
-  _Cohesion score 0.06914893617021277 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05201266395296246 - nodes in this community are weakly interconnected._
 - **Should `Material & Media` be split into smaller, more focused modules?**
-  _Cohesion score 0.06568832983927324 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05336538461538461 - nodes in this community are weakly interconnected._
 - **Should `Adaptive Engine & Rules` be split into smaller, more focused modules?**
-  _Cohesion score 0.06093189964157706 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0597567424643046 - nodes in this community are weakly interconnected._

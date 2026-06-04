@@ -334,12 +334,12 @@
                         class="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-inner"
                     >
                         {#if (selectedNode.type === 'gate' && selectedNode.data.actions?.length > 0) || selectedNode.type === 'action'}
-                            {@const firstAction = selectedNode.data.actions[0]}
+                            {@const firstAction = selectedNode.data.actions?.[0]}
                             {@const actionId =
                                 selectedNode.type === 'gate'
                                     ? typeof firstAction === 'string'
                                         ? firstAction
-                                        : firstAction.id
+                                        : firstAction?.id
                                     : selectedNode.data.id}
 
                             {#if actionId === 'INCREASE_DIFF'}
