@@ -299,7 +299,6 @@ $this->app->singleton(Service::class, fn () => new Service(fn () => request()));
 Prefer lean-ctx MCP tools over native equivalents for token savings.
 Full rules: @LEAN-CTX.md
 <!-- /lean-ctx -->
-
 <!-- lean-ctx-compression -->
 OUTPUT STYLE: expert-terse
 - Telegraph format: subject-verb-object, drop articles/prepositions
