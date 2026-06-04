@@ -29,8 +29,6 @@ interface MaterialRepositoryInterface
 
     public function findWithQuestionsShuffled(string $id): Material;
 
-    public function findWithQuestionsAndAnswers(string $id): Material;
-
     public function getMaterialsForAdmin(
         ?string $search = null,
         string $sort = 'created_at',

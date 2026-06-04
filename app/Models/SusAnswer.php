@@ -18,14 +18,6 @@ final class SusAnswer extends Model
     ];
 
     /**
-     * @return BelongsTo<SusResult, $this>
-     */
-    public function result(): BelongsTo
-    {
-        return $this->belongsTo(SusResult::class, 'sus_result_id');
-    }
-
-    /**
      * @return BelongsTo<SusQuestion, $this>
      */
     public function question(): BelongsTo

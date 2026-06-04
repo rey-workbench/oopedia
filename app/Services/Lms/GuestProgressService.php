@@ -19,8 +19,7 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
         private string $cookieStreak = 'guest_streak',
         private string $cookiePerformance = 'guest_performance',
         private int $cookieLifetime = 60 * 24 * 30,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, mixed> */
     public function getProgress(): array
@@ -97,12 +96,6 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
         ];
     }
 
-    public function saveGamificationState(int $xp, int $streak): void
-    {
-        $this->setCookie($this->cookieXp, (string) $xp);
-        $this->setCookie($this->cookieStreak, (string) $streak);
-    }
-
     public function getStudentState(): StudentState
     {
         $gamification = $this->getGamificationState();
@@ -134,19 +127,6 @@ final readonly class GuestProgressService implements GuestProgressServiceInterfa
         $studentState = $this->getStudentState();
 
         return new StudentStateResource($studentState)->resolve();
-    }
-
-    public function saveStudentState(StudentState $studentState): void
-    {
-        $this->saveGamificationState((int) $studentState->xp, (int) $studentState->streak);
-
-        $this->setCookie($this->cookiePerformance, json_encode([
-            StudentStateSchema::TOTAL_ANSWERED    => $studentState->total_answered,
-            StudentStateSchema::CORRECT_COUNT     => $studentState->correct_count,
-            StudentStateSchema::HINTS_USED        => $studentState->hints_used,
-            StudentStateSchema::HINTS_AVAILABLE   => $studentState->hints_available,
-            StudentStateSchema::TARGET_DIFFICULTY => $studentState->target_difficulty,
-        ]));
     }
 
     private function setCookie(string $name, string $value): void

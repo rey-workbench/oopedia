@@ -84,11 +84,6 @@ final class MaterialRepository implements MaterialRepositoryInterface
         return $material;
     }
 
-    public function findWithQuestionsAndAnswers(string $id): Material
-    {
-        return Material::with(['questions.answers'])->findOrFail($id);
-    }
-
     public function getMaterialsForAdmin(
         ?string $search = null,
         string $sort = 'created_at',

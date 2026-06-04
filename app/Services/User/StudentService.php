@@ -31,8 +31,7 @@ final readonly class StudentService implements StudentServiceInterface
         public UserRepositoryInterface $userRepo,
         public MaterialRepositoryInterface $materialRepo,
         public ProgressRepositoryInterface $progressRepo,
-    ) {
-    }
+    ) {}
 
     public function getStudentsWithProgress(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
@@ -54,13 +53,6 @@ final readonly class StudentService implements StudentServiceInterface
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
         return $this->userRepo->getStudentsList($search, $perPage);
-    }
-
-    public function getStudentById(string $id): ?array
-    {
-        $user = $this->userRepo->find($id);
-
-        return $user instanceof User ? new UserResource($user)->resolve() : null;
     }
 
     public function createStudent(array $data): User

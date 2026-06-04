@@ -50,32 +50,6 @@ final class AdaptiveRule extends Model
         ];
     }
 
-    /**
-     * Accessor for related Action models.
-     * Use $rule->actions for the raw JSON with metadata.
-     */
-    protected function getActionModelsAttribute()
-    {
-        $actions = $this->getAttribute('actions') ?? [];
-
-        if (empty($actions)) {
-            return collect();
-        }
-
-        $ids = array_map(fn ($action): mixed => is_array($action) ? $action['id'] : $action, (array) $actions);
-
-        return AdaptiveAction::whereIn('id', $ids)->get();
-    }
-
-    protected function getRequiredFactsAttribute()
-    {
-        if (empty($this->required_fact_ids)) {
-            return collect();
-        }
-
-        return AdaptiveFact::whereIn('id', $this->required_fact_ids)->get();
-    }
-
     protected function getDeducedFactsAttribute()
     {
         if (empty($this->deduced_fact_ids)) {

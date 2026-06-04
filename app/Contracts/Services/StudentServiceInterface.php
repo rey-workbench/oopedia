@@ -12,8 +12,6 @@ interface StudentServiceInterface
 {
     public function getStudentsList(?string $search = null, int $perPage = 10): LengthAwarePaginator;
 
-    public function getStudentById(string $id): ?array;
-
     public function createStudent(array $data): User;
 
     public function updateStudent(string $studentId, array $data): User;

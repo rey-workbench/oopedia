@@ -30,14 +30,6 @@ final class MslqAnswer extends Model
     ];
 
     /**
-     * @return BelongsTo<MslqResult, $this>
-     */
-    public function mslqResult(): BelongsTo
-    {
-        return $this->belongsTo(MslqResult::class);
-    }
-
-    /**
      * @return BelongsTo<MslqQuestion, $this>
      */
     public function question(): BelongsTo

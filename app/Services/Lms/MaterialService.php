@@ -26,8 +26,7 @@ final readonly class MaterialService implements MaterialServiceInterface
         private MaterialRepositoryInterface $materialRepository,
         private MediaRepositoryInterface $mediaRepository,
         private ProgressRepositoryInterface $progressRepository,
-    ) {
-    }
+    ) {}
 
     // =========================================================================
     // MATERIAL MANAGEMENT (CRUD)
@@ -55,13 +54,6 @@ final readonly class MaterialService implements MaterialServiceInterface
         $material = $this->materialRepository->find($id);
 
         return $material instanceof Material ? new MaterialResource($material)->resolve() : null;
-    }
-
-    public function getMaterialWithQuestionsAndAnswers(string $id): ?array
-    {
-        $material = $this->materialRepository->findWithQuestionsAndAnswers($id);
-
-        return $material ? new MaterialResource($material)->resolve() : null;
     }
 
     public function createMaterial(MaterialCreateDTO $materialCreateDTO): Material
