@@ -125,7 +125,7 @@
 </style>
 
 {#if xpAnimationState.active && showStars}
-    <div class="pointer-events-none fixed inset-0 z-10002 overflow-hidden">
+    <div class="pointer-events-none fixed inset-0 z-[10002] overflow-hidden">
         {#each stars as star (star.id)}
             <div
                 class="absolute"

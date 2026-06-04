@@ -248,7 +248,7 @@
         id="feedback-result-container"
         data-variant={variant}
         in:fly={{ y: 100, duration: 500 }}
-        class={`fixed inset-x-0 bottom-0 z-1000 transform transition-all duration-500 ease-out ${feedbackTone.container}`}
+        class={`fixed inset-x-0 bottom-0 z-[1000] transform transition-all duration-500 ease-out ${feedbackTone.container}`}
     >
         <div
             class={`absolute -top-1 left-0 h-1 transition-all duration-75 ease-linear ${feedbackTone.progress}`}
@@ -384,7 +384,7 @@
 <!-- Popup Variants (Stylized fullscreen overlay like Hooray!) -->
 {#if quizState.show_feedback && quizState.feedbackData && popupActions.length > 0 && showPopups}
     <div
-        class="pointer-events-auto fixed inset-0 z-10001 flex cursor-pointer flex-col items-center justify-center bg-white/60 backdrop-blur-md"
+        class="pointer-events-auto fixed inset-0 z-[10001] flex cursor-pointer flex-col items-center justify-center bg-white/60 backdrop-blur-md"
         transition:fade={{ duration: 400 }}
         role="button"
         tabindex="0"
@@ -417,7 +417,7 @@
 <!-- Challenge Variants (Premium Surprise Overlay) -->
 {#if quizState.show_feedback && quizState.feedbackData && challengeActions.length > 0 && challengeQuestion && showChallenges}
     <div
-        class="fixed inset-0 z-10001 flex flex-col items-center justify-center overflow-hidden p-4 md:p-10"
+        class="fixed inset-0 z-[10001] flex flex-col items-center justify-center overflow-hidden p-4 md:p-10"
         transition:fade={{ duration: 600 }}
     >
         <!-- Animated Background Mesh -->
