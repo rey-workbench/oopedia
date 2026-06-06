@@ -301,7 +301,7 @@ export function registerMahasiswaTutorials() {
                 element: '#profile-stats',
                 popover: {
                     title: 'Data Personalisasi',
-                    description: 'Lihat gaya belajar, level, akurasi, dan streak belajarmu.',
+                    description: 'Lihat gaya belajar, level, dan akurasi belajarmu.',
                     side: 'top',
                     align: 'start',
                 },
@@ -310,7 +310,16 @@ export function registerMahasiswaTutorials() {
                 element: '#learning-profile-analysis',
                 popover: {
                     title: 'Analisis Pembelajaran',
-                    description: 'Statistik lengkap: gaya belajar, level, akurasi, dan streak.',
+                    description: 'Statistik lengkap: gaya belajar, level, dan akurasi.',
+                    side: 'top',
+                    align: 'center',
+                },
+            },
+            {
+                element: '#profile-streak-widget',
+                popover: {
+                    title: 'Daily Streak',
+                    description: 'Pertahankan runtunan login setiap hari agar streak belajarmu tidak reset!',
                     side: 'top',
                     align: 'center',
                 },

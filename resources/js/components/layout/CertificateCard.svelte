@@ -19,6 +19,8 @@
         id ? ROUTES.MAHASISWA.CERTIFICATES.PREVIEW(id, page.props['auth']?.user?.id) : '#'
     );
 
+    let containerWidth = $state(0);
+
     const downloadAs = async () => {
         if (!id) return;
         isDownloading = true;
@@ -32,14 +34,16 @@
 
 <div class="group space-y-4">
     <div
-        class="relative aspect-[1.414/1] w-full overflow-hidden rounded-2xl border-4 border-slate-200 bg-white shadow-2xl transition-all hover:border-amber-400/50"
+        bind:clientWidth={containerWidth}
+        class="relative aspect-[1.414/1] w-full overflow-hidden rounded-[2rem] border-2 border-b-8 border-slate-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl"
     >
         {#if id}
             <iframe
                 src={previewUrl}
                 title="Sertifikat Preview"
                 scrolling="no"
-                class="pointer-events-none h-[200%] w-[200%] origin-top-left scale-50 border-none"
+                class="pointer-events-none absolute top-0 left-0 border-none origin-top-left bg-white"
+                style="width: 1123px; height: 794px; transform: scale({containerWidth / 1123});"
             ></iframe>
         {:else}
             <div class="flex h-full items-center justify-center bg-slate-50 text-slate-400">

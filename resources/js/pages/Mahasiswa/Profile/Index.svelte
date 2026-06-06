@@ -17,7 +17,6 @@
         Zap,
         Trophy,
         Target,
-        Flame,
         CheckCircle,
         Lightbulb,
         Loader2,
@@ -32,6 +31,7 @@
     import CertificateCard from '@/components/layout/CertificateCard.svelte';
     import { ROUTES } from '@/utils/route';
     import EmptyState from '@/components/ui/EmptyState.svelte';
+    import DailyStreakWidget from '@/components/profile/DailyStreakWidget.svelte';
 
     import type { User, LearningPersonalization, Certification } from '@/types';
 
@@ -77,13 +77,6 @@
             icon: Target,
             variant: 'success',
             footer: `${state.personalization?.correct_count || 0}/${state.personalization?.total_questions_answered || 0} Benar`,
-        },
-        {
-            title: 'Streak',
-            value: state.personalization?.current_streak || 0,
-            icon: Flame,
-            variant: 'warning',
-            footer: `Max: ${state.personalization?.max_streak || 0} Hari`,
         },
     ]);
 
@@ -196,10 +189,7 @@
                 Data Personalisasi Pembelajaran
             </h3>
             <div id="profile-stats" class="space-y-8">
-                <div
-                    id="learning-profile-analysis"
-                    class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
-                >
+                <div id="learning-profile-analysis" class="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {#each personalizationStats as stat}
                         <Card hover={true} class="group relative overflow-hidden">
                             <div class="absolute top-0 right-0 p-4 text-slate-400 opacity-10">
@@ -239,15 +229,6 @@
                                     class="font-display mb-1 flex items-center gap-3 text-3xl font-black tracking-tight text-slate-900"
                                 >
                                     {stat.value}
-                                    {#if stat.title === 'Streak'}
-                                        <div class="animate-pulse text-amber-500">
-                                            <Flame
-                                                size={32}
-                                                strokeWidth={2.5}
-                                                class="fill-amber-500/20"
-                                            />
-                                        </div>
-                                    {/if}
                                 </div>
 
                                 {#if stat.footer}
@@ -273,6 +254,12 @@
                         </Card>
                     {/each}
                 </div>
+
+                <!-- Daily Streak Widget -->
+                <DailyStreakWidget
+                    currentStreak={state.personalization?.current_streak || 0}
+                    maxStreak={state.personalization?.max_streak || 0}
+                />
 
                 <div class="space-y-6 pt-6">
                     <h4
