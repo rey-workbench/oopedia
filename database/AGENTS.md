@@ -4,28 +4,25 @@
 # Database (database/)
 
 ## Purpose
-Contains Laravel database migrations, model factories, and database seeders.
+Contains Laravel database migrations, model factories, seeders.
 
 ## Subdirectories
 | Directory | Purpose |
-|-----------|---------|
 | `migrations/` | Database schema definitions |
-| `factories/` | Model factories for testing and seeding |
-| `seeders/` | Database seeders for populating initial/fake data |
+| `factories/` | Model factories for testing + seeding |
+| `seeders/` | Database seeders for initial/fake data |
 
 ## For AI Agents
 
 ### Working In This Directory
-- **Migrations**: When modifying a column, the migration MUST include all of the attributes that were previously defined on the column (otherwise they drop).
-- **Factories**: Create useful factories alongside models. They are heavily relied upon in tests.
+- **Migrations**: Modifying column MUST include all previous attributes (otherwise drop).
+- **Factories**: Create useful factories alongside models. Relied upon in tests.
 
 ### Testing Requirements
-- Seeders should be idempotent where possible.
-- Use factories extensively in Feature tests rather than raw database inserts.
+- Seeders idempotent where possible.
+- Use factories extensively in Feature tests, not raw DB inserts.
 
 ## Dependencies
 
 ### Internal
-- `app/Models/` - The Eloquent models that these migrations and factories pertain to.
-
-<!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+- `app/Models/` - Eloquent models for migrations + factories.

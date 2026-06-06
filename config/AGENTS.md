@@ -4,16 +4,14 @@
 # Configuration (config/)
 
 ## Purpose
-Contains Laravel framework and application-specific configuration files.
+Laravel framework + application-specific config files.
 
 ## For AI Agents
 
 ### Working In This Directory
-- These files read from environment variables via the `env()` helper.
-- **NEVER** hardcode sensitive values directly into these configuration files. Always use `.env`.
-- Configurations can be read from anywhere using the `config()` helper, e.g., `config('app.name')`.
+- Files read from env vars via `env()`.
+- **NEVER** hardcode sensitive values. Use `.env`.
+- Read config from anywhere using `config()` helper (`config('app.name')`).
 
 ### Common Patterns
-- In Laravel 12+, the number of configuration files is often reduced as many settings are moved to environment variables or `bootstrap/app.php`. Check if a setting should be environment-based before adding a new config file.
-
-<!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+- Laravel 12+ reduced config files. Settings moved to env vars or `bootstrap/app.php`. Check if setting should be env-based before adding new config file.

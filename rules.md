@@ -1,12 +1,12 @@
 # Aturan Pembelajaran Adaptif (Adaptive Learning Rules)
 
-Dokumen ini berisi spesifikasi aturan pembelajaran adaptif yang digunakan dalam sistem e-learning Oopedia berbasis algoritma *Forward Chaining*. Aturan-aturan ini didefinisikan dalam database melalui seeder `AdaptiveRuleSeeder` dan dievaluasi secara dinamis oleh `AdaptiveEngineService`.
+Spesifikasi aturan pembelajaran adaptif Oopedia berbasis *Forward Chaining*. Didefinisikan via `AdaptiveRuleSeeder`, dievaluasi `AdaptiveEngineService`.
 
 ---
 
 ## Tabel 3.1 Interpretasi Fakta/Gejala (Input)
 
-Tabel ini mendefinisikan gejala atau fakta (*Facts*) yang diamati langsung dari perilaku mahasiswa (*G-Codes*) maupun fakta hasil kesimpulan/diagnosa virtual (*V-Codes*).
+Definisi fakta teramati dari mahasiswa (*G-Codes*) dan fakta hasil diagnosa virtual (*V-Codes*).
 
 | Kode Fakta | Nama Fakta / Gejala | Kategori | Kondisi Logika / Parameter Sensoris |
 | :--- | :--- | :--- | :--- |
@@ -33,50 +33,50 @@ Tabel ini mendefinisikan gejala atau fakta (*Facts*) yang diamati langsung dari 
 | **G15** | Streak Kuat (>=5 hari) | Primary | `streak >= 5` |
 | **G16** | Streak Legendaris (>=10 hari) | Primary | `streak >= 10` |
 | **G19** | Level Expert | Primary | `level == 'Expert'` |
-| **V01** | Krisis Pembelajaran | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
-| **V02** | Sedang Kesulitan | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
-| **V03** | Performa Optimal | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
-| **V04** | Ketergantungan Bantuan | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
-| **V05** | Potensi Menebak | Virtual / Diagnosa | Disimpulkan melalui Forward Chaining (Aturan Diagnosa) |
+| **V01** | Krisis Pembelajaran | Virtual / Diagnosa | Disimpulkan via Forward Chaining |
+| **V02** | Sedang Kesulitan | Virtual / Diagnosa | Disimpulkan via Forward Chaining |
+| **V03** | Performa Optimal | Virtual / Diagnosa | Disimpulkan via Forward Chaining |
+| **V04** | Ketergantungan Bantuan | Virtual / Diagnosa | Disimpulkan via Forward Chaining |
+| **V05** | Potensi Menebak | Virtual / Diagnosa | Disimpulkan via Forward Chaining |
 
 ---
 
 ## Tabel 3.2 Interpretasi Hasil/Tindakan (Output)
 
-Tabel ini mendefinisikan tindakan atau rekomendasi pedagogis (*Actions*) yang diberikan oleh sistem kepada mahasiswa berdasarkan hasil diagnosa kognitif mereka.
+Tindakan pedagogis (*Actions*) dari sistem berdasarkan diagnosa.
 
 | Kode Aksi | Nama Tindakan | Deskripsi | Varian UI / Mekanisme |
 | :--- | :--- | :--- | :--- |
-| **FEEDBACK** | Lanjutkan Latihan | Navigasi normal ke soal berikutnya. | `feedback` |
-| **GIVE_HINT** | Bonus Bantuan | Berikan tambahan +1 jatah Hint untuk soal selanjutnya. | `popup` |
-| **REMEDIAL** | Remedial Standard | Ulangi materi dari awal untuk penguatan konsep. | `feedback` |
-| **REMEDIAL_INTENSIVE** | Remedial Intensif | Remedial materi disertai pemberian soal dengan tingkat kesulitan rendah. | `feedback` |
-| **REDUCE_DIFF** | Turunkan Kesulitan | Ganti soal berikutnya ke level kesulitan yang lebih rendah. | `feedback` |
-| **INCREASE_DIFF** | Naikkan Kesulitan | Naikkan tingkat kesulitan soal untuk memberikan tantangan baru. | `feedback` |
-| **REDUCE_HINT** | Batasi Bantuan | Batasi/kurangi ketersediaan fitur bantuan untuk memaksa kemandirian. | `popup` |
-| **NEW_CHALLENGE** | Tantangan Kilat | Instruksi pengerjaan soal berikutnya dengan target waktu yang cepat. | `challenge` |
-| **STREAK_BONUS** | Bonus Streak | Memberikan bonus XP (Experience Points) untuk menjaga keterlibatan belajar. | `popup` |
-| **CERTIFICATION** | Berikan Sertifikat | Memberikan sertifikat pencapaian tertinggi atas penguasaan modul. | `feedback` |
-| **SHOW_GUIDANCE** | Tampilkan Bimbingan | Memberikan petunjuk bimbingan kontekstual dan dorongan motivasi. | `feedback` |
-| **NOTIFY_TEACHER** | Lapor Pengajar | Mengirimkan notifikasi peringatan potensi krisis belajar mahasiswa ke admin/dosen. | `background_notification` |
+| **FEEDBACK** | Lanjutkan Latihan | Navigasi normal ke soal berikut. | `feedback` |
+| **GIVE_HINT** | Bonus Bantuan | Beri +1 Hint soal selanjutnya. | `popup` |
+| **REMEDIAL** | Remedial Standard | Ulangi materi dari awal. | `feedback` |
+| **REMEDIAL_INTENSIVE** | Remedial Intensif | Remedial materi + soal mudah. | `feedback` |
+| **REDUCE_DIFF** | Turunkan Kesulitan | Ganti soal berikut ke level lebih rendah. | `feedback` |
+| **INCREASE_DIFF** | Naikkan Kesulitan | Naikkan level soal berikut. | `feedback` |
+| **REDUCE_HINT** | Batasi Bantuan | Kurangi hint paksa kemandirian. | `popup` |
+| **NEW_CHALLENGE** | Tantangan Kilat | Soal berikut target waktu cepat. | `challenge` |
+| **STREAK_BONUS** | Bonus Streak | Beri XP jaga keterlibatan. | `popup` |
+| **CERTIFICATION** | Berikan Sertifikat | Beri sertifikat pencapaian tertinggi. | `feedback` |
+| **SHOW_GUIDANCE** | Tampilkan Bimbingan | Beri petunjuk kontekstual/motivasi. | `feedback` |
+| **NOTIFY_TEACHER** | Lapor Pengajar | Kirim notif peringatan krisis ke admin. | `background_notification` |
 
 ---
 
 ## Tabel 3.3 Rule Base Forward Chaining (Aturan)
 
-Basis aturan (*Rule Base*) dibagi menjadi dua tahapan proses inferensi *Forward Chaining*:
-1. **Aturan Diagnosa (Diagnostic Rules)**: Mendeduksi fakta baru (*Virtual Facts* / *V-Codes*) berdasarkan fakta gejala input (*G-Codes*).
-2. **Aturan Intervensi (Intervention Rules)**: Menentukan tindakan pedagogis (*Adaptive Actions*) berdasarkan kombinasi diagnosa dan gejala teramati.
+Dua tahapan proses inferensi *Forward Chaining*:
+1. **Aturan Diagnosa**: Deduksi *V-Codes* dari input *G-Codes*.
+2. **Aturan Intervensi**: Tentukan *Adaptive Actions* dari diagnosa + gejala.
 
 ### 1. Aturan Diagnosa (Deducing V-Codes)
 
 | Kode Rule | Prioritas | Nama Aturan | Kondisi Premis (IF) | Hasil Konklusi (THEN) |
 | :--- | :---: | :--- | :--- | :--- |
-| **R01** | 10 | Analisa Performa Optimal | Jawaban Terakhir Benar (**G21**) AND Akurasi > 90% (**G17**) AND Respon Sangat Cepat (**G11**) | Performa Optimal (**V03**) |
-| **R02** | 9 | Analisa Krisis Belajar | Jawaban Terakhir Salah (**G22**) AND Akurasi < 40% (**G01**) AND Tren Menurun (**G05**) | Krisis Pembelajaran (**V01**) |
-| **R03** | 8 | Analisa Kesulitan Materi | Jawaban Terakhir Salah (**G22**) AND Akurasi 40-60% (**G02**) AND Respon Lambat (**G12**) | Sedang Kesulitan (**V02**) |
-| **R04** | 7 | Analisa Pola Bantuan | Ketergantungan Hint (**G08**) AND Respon Lambat (**G12**) | Ketergantungan Bantuan (**V04**) |
-| **R05** | 6 | Analisa Potensi Menebak | Respon Sangat Cepat (**G11**) AND Akurasi < 40% (**G01**) | Potensi Menebak (**V05**) |
+| **R01** | 10 | Analisa Performa Optimal | Jawaban Benar (**G21**) AND Akurasi > 90% (**G17**) AND Cepat (**G11**) | Performa Optimal (**V03**) |
+| **R02** | 9 | Analisa Krisis Belajar | Jawaban Salah (**G22**) AND Akurasi < 40% (**G01**) AND Tren Turun (**G05**) | Krisis Pembelajaran (**V01**) |
+| **R03** | 8 | Analisa Kesulitan Materi | Jawaban Salah (**G22**) AND Akurasi 40-60% (**G02**) AND Lambat (**G12**) | Sedang Kesulitan (**V02**) |
+| **R04** | 7 | Analisa Pola Bantuan | Ketergantungan Hint (**G08**) AND Lambat (**G12**) | Ketergantungan Bantuan (**V04**) |
+| **R05** | 6 | Analisa Potensi Menebak | Cepat (**G11**) AND Akurasi < 40% (**G01**) | Potensi Menebak (**V05**) |
 
 ### 2. Aturan Intervensi (Firing Actions)
 
@@ -88,4 +88,4 @@ Basis aturan (*Rule Base*) dibagi menjadi dua tahapan proses inferensi *Forward 
 | **R09** | 2 | Strategi Penguatan Mandiri | Ketergantungan Bantuan (**V04**) | **REDUCE_HINT** |
 | **R10** | 1 | Strategi Bimbingan Fokus | Potensi Menebak (**V05**) | **SHOW_GUIDANCE** |
 | **R11** | 0 | Strategi Kelulusan Materi | Level Expert (**G19**) AND Akurasi > 90% (**G17**) | **CERTIFICATION** |
-| **R00** | 100 | Progres Terjaga *(Default)* | *(Default fallback jika aturan di atas tidak terpenuhi)* | **FEEDBACK** |
+| **R00** | 100 | Progres Terjaga *(Default)* | *(Fallback)* | **FEEDBACK** |
