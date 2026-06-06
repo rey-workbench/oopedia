@@ -5,3 +5,5 @@ allowBuilds:
   puppeteer: true
 ignoredBuiltDependencies:
   - esbuild
+allowedDeprecatedVersions:
+  lodash.isequal: "4.5.0"
